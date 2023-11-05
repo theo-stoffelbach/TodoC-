@@ -22,23 +22,25 @@ namespace UltimateProject.Controller
         { 
             if (!Utils.VerifArgs(args,3,4)) return;
 
-            PriorityStatus status = Utils.ChangeStringToPriority(args[2]);
-            DateTime date = Utils.ChangeStringToDate(args[3]);
             TodoModel model;
-
-            if (Utils.VerifArgs(args, 3))
+            if (Utils.VerifArgsWithoutPrint(args, 3))
             {
-                model = new TodoModel(args[0], status, date);
-                
+                PriorityStatus status = Utils.ChangeStringToPriority(args[1]);
+                DateTime date = Utils.ChangeStringToDate(args[2]);
+                model = new TodoModel(args[0], status, date);                
             }
             else
             {
+                PriorityStatus status = Utils.ChangeStringToPriority(args[2]);
+                DateTime date = Utils.ChangeStringToDate(args[3]);
+
                 model = new TodoModel(args[0], args[1], status, date);
             }
 
-            TodoModel.AddTodo(model);
-        }        
-        
+            TodoModel todo = TodoModel.AddTodo(model);
+            if (Utils.VerifArgsWithoutPrint(args,3) && todo != null) Menu.GetInstance().AddNotifTodo(todo.Id);
+        }
+
         public static void ReadTodos(string[] args)
         { 
             if (!Utils.VerifArgs(args,0)) return;
@@ -79,6 +81,14 @@ namespace UltimateProject.Controller
         public static void ActivateTodo(string[] args)
         {
             if (!Utils.VerifArgs(args, 1)) return;
+            
+            int id = int.Parse(args[0]);
+
+            TodoModel.ActivateTodo(id);
+        }
+        public static void AddDescTodo(string[] args)
+        {
+            if (!Utils.VerifArgs(args, 2)) return;
             
             int id = int.Parse(args[0]);
 

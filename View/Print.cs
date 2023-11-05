@@ -8,6 +8,7 @@ namespace UltimateProject.View
 {
     public class Print
     {
+
         public static void PrintGetValue(string message)
         {
             Console.Write($"{message} : ");

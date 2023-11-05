@@ -13,10 +13,12 @@ namespace UltimateProject.Controller
     {
         private static string _chooseUser;
         private static string[] _arguments;
-        public List<Notif> NotifList ;
+        public List<Notif> NotifList = new List<Notif>();
         public static Dictionary<string, Action> ChooseMenu;
 
-        public Menu()
+        private static Menu _instance = null;
+
+        private Menu()
         {
             ChooseMenu = new Dictionary<string, Action>
             {
@@ -26,15 +28,33 @@ namespace UltimateProject.Controller
                 { "updatetodo", () => TodoController.UpdateTodos(_arguments)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments)},
                 { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
+                { "adddesktodo", () => TodoController.ActivateTodo(_arguments)},
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)}
             };
 
         }
 
+        public static Menu GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new Menu();
+            }
+            return _instance;
+        }
+
+        public void AddNotifTodo(int id)
+        {
+            NotifList.Add(new Notif(id));
+        }
+
         public void MenuTest()
         {
+            Notif.TestNotifTime(NotifList);
+
             Print.PrintGetValue("Enter a command");
             string inputUser = Console.ReadLine();
+
 
             string[] command = inputUser.Split(' ');
             _chooseUser = command[0].ToLower();

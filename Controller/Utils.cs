@@ -24,9 +24,21 @@ namespace UltimateProject.Controller
                 return false;
             }
         }
+        public static bool VerifArgsWithoutPrint(string[] args, int nbArg)
+        {
+            if (args.Length == nbArg)
+            {
+                return true;
+            }
+            else
+            {
+                Print.ErrorDisplay("The number of arguments isn't rigth");
+                return false;
+            }
+        }
         public static bool VerifArgs(string[] args, int minNbArgs, int maxNbArgs)
         {
-            if (args.Length > minNbArgs && args.Length < maxNbArgs)
+            if (args.Length >= minNbArgs && args.Length <= maxNbArgs)
             {
                 return true;
             }

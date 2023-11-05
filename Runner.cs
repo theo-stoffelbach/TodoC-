@@ -5,7 +5,7 @@ internal class Runner
 {
     private static void Main(string[] args)
     {
-        Menu menu = new Menu();
+        Menu menu = Menu.GetInstance();
         menu.MenuTest();
 
     }

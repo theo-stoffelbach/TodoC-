@@ -54,18 +54,20 @@ namespace UltimateProject.Model
             DueDate = dueDate;
             IsCompleted = false;
         }
-
-        public static void AddTodo(TodoModel todoModel)
+         
+        public static TodoModel AddTodo(TodoModel todoModel)
         {
             try
             {
                 db.Add(todoModel);
                 db.SaveChanges();
-                Print.SucessDisplay("Todo Created");
+                Print.SucessDisplay("Todo Created with id : " + todoModel.Id);
+                return todoModel;
             }
             catch (Exception err)
             {
                 Print.ErrorFatalDisplay($"with bdd to : {err}");
+                return null;
             }
         }
 
