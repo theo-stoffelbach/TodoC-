@@ -28,7 +28,7 @@ namespace UltimateProject.Controller
                 { "updatetodo", () => TodoController.UpdateTodos(_arguments)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments)},
                 { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
-                { "adddesktodo", () => TodoController.ActivateTodo(_arguments)},
+                { "adddesctodo", () => TodoController.AddDescTodo(_arguments)},
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)}
             };
 

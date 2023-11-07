@@ -92,7 +92,7 @@ namespace UltimateProject.Controller
             
             int id = int.Parse(args[0]);
 
-            TodoModel.ActivateTodo(id);
+            TodoModel.AddDescTodo(id, args[1]);
         }
         public static void FilterTodo(string[] args)
         {

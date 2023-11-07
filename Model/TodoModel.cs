@@ -108,6 +108,28 @@ namespace UltimateProject.Model
             Print.ErrorDisplay($"not found Todo with Id : {id}");
         }
 
+        public static void AddDescTodo(int id,string description)
+        {
+            TodoModel? tododb = db.TodoModels.Find(id);
+            if (tododb != null)
+            {
+                try
+                {
+                    tododb.Description = description;
+                    db.Update(tododb);
+                    db.SaveChanges();
+                    Print.SucessDisplay("Todo update with the description");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Print.ErrorDisplay(ex.ToString());
+                }
+            }
+            Print.ErrorDisplay($"not found Todo with Id : {id}");
+        }
+
+
         public static void UpdateTodo(int id, TodoModel todoModel)
         {
             TodoModel? tododb = db.TodoModels.Find(id);
