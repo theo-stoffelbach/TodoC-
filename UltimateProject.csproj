@@ -15,4 +15,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="log\" />
+    <Folder Include="zip\" />
+  </ItemGroup>
+
 </Project>

@@ -32,7 +32,6 @@ namespace UltimateProject.Controller
             }
             else
             {
-                Print.ErrorDisplay("The number of arguments isn't rigth");
                 return false;
             }
         }

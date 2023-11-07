@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TP_Theo_Stoffelbach.Controller;
 using UltimateProject.Model;
 using UltimateProject.View;
 
@@ -17,6 +19,7 @@ namespace UltimateProject.Controller
         public static Dictionary<string, Action> ChooseMenu;
 
         private static Menu _instance = null;
+        private static Logger logger = new Logger();
 
         private Menu()
         {
@@ -24,12 +27,13 @@ namespace UltimateProject.Controller
             {
                 { "exit", () => Environment.Exit(0)},
                 { "createtodo", () => TodoController.AddTodo(_arguments)},
-                { "readtodos", () => TodoController.ReadTodos(_arguments)},
+                { "readtodos",  () => TodoController.ReadTodos(_arguments)},
                 { "updatetodo", () => TodoController.UpdateTodos(_arguments)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments)},
                 { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
-                { "adddesctodo", () => TodoController.AddDescTodo(_arguments)},
-                { "filtertodo", () => TodoController.FilterTodo(_arguments)}
+                { "adddesctodo",() => TodoController.AddDescTodo(_arguments)},
+                { "filtertodo", () => TodoController.FilterTodo(_arguments)},
+                { "zip", () => logger.ZipAllLogs()}
             };
 
         }
@@ -39,7 +43,7 @@ namespace UltimateProject.Controller
             if (_instance == null)
             {
                 _instance = new Menu();
-            }
+            }   
             return _instance;
         }
 
@@ -64,6 +68,8 @@ namespace UltimateProject.Controller
             {
                 Action valeur = ChooseMenu[_chooseUser.ToLower()];
                 valeur();
+                
+                logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
             }
             else
             {

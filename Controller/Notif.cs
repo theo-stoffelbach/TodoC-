@@ -22,7 +22,6 @@ namespace UltimateProject.Controller
 
         public static List<Notif> TestNotifTime(List<Notif> notifs)
         {
-            Print.SucessDisplay("test");
             if (notifs.Count == 0) return notifs;
             List<string> notifsDeleted = new List<string>() { };
             for (int i = 0; i <= notifs.Count - 1; i++)
