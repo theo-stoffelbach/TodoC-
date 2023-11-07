@@ -47,6 +47,7 @@ namespace UltimateProject.Controller
                 return false;
             }
         }
+
         public static PriorityStatus ChangeStringToPriority(string status)
         {
             if (Enum.TryParse(status, true, out PriorityStatus result)) return result;

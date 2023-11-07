@@ -33,6 +33,7 @@ namespace UltimateProject.Controller
                 { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments)},
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)},
+                { "showstats", () => Stats.Show()},
                 { "zip", () => logger.ZipAllLogs()}
             };
 

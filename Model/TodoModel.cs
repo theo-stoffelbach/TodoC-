@@ -54,7 +54,7 @@ namespace UltimateProject.Model
             DueDate = dueDate;
             IsCompleted = false;
         }
-         
+        
         public static TodoModel AddTodo(TodoModel todoModel)
         {
             try
@@ -128,8 +128,7 @@ namespace UltimateProject.Model
             }
             Print.ErrorDisplay($"not found Todo with Id : {id}");
         }
-
-
+        
         public static void UpdateTodo(int id, TodoModel todoModel)
         {
             TodoModel? tododb = db.TodoModels.Find(id);
@@ -184,9 +183,6 @@ namespace UltimateProject.Model
             db.SaveChanges();
         }
 
-
-
-
         public override string ToString()
         {
             return $"Id : {Id}, " +
@@ -195,8 +191,6 @@ namespace UltimateProject.Model
                 $"Priority status : {Status}," +
                 $"Due Date : {DueDate},";
         }
-
-
 
     }
 }
