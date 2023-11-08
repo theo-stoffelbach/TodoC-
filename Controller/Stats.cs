@@ -16,7 +16,7 @@ namespace TP_Theo_Stoffelbach.Controller
 
         private static void Calcul()
         {
-            List<TodoModel> todos = TodoModel.ReadTodos();
+            List<UserModel> todos = UserModel.ReadTodos();
             _tasksCount = todos.Count;
 
             foreach (var todo in todos)

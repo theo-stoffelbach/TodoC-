@@ -10,7 +10,8 @@ namespace UltimateProject.Model
 
         public DbSet<TodoModel> TodoModels { get; set; }
         public DbSet<UserModel> UserModels { get; set; }
-
+        public DbSet<UserTodosModel> UserTodosModels { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(connectionString);

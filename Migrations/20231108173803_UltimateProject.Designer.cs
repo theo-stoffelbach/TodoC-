@@ -12,7 +12,7 @@ using UltimateProject.Model;
 namespace UltimateProject.Migrations
 {
     [DbContext(typeof(EFContext))]
-    [Migration("20231102173752_UltimateProject")]
+    [Migration("20231108173803_UltimateProject")]
     partial class UltimateProject
     {
         /// <inheritdoc />
@@ -37,10 +37,9 @@ namespace UltimateProject.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DueDate")
+                    b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCompleted")
@@ -50,7 +49,7 @@ namespace UltimateProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -68,6 +67,22 @@ namespace UltimateProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("UserModels");
+                });
+
+            modelBuilder.Entity("UltimateProject.Model.UserTodosModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Todo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("UserTodosModels");
                 });
 #pragma warning restore 612, 618
         }

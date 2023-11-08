@@ -1,22 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using UltimateProject.View;
 
 namespace UltimateProject.Model
 {
     [Keyless]
     public class UserModel
     {
+        public static EFContext db = new EFContext();
         public int Id { get; set; }
         public string Name { get; set; }
-        List<int> _userIds { get; set; }
+
+        [NotMapped] public List<int> _userIds { get; set; }
 
         public UserModel(string name)
         {
             Name = name;
+        }
+
+        public static void AddTodo()
+        {
+            try
+            {
+                UserModel model = new UserModel("theo");
+                db.Add(model);
+                db.SaveChanges();
+                Print.SucessDisplay("Todo Created with id : " + model.Id);
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
+            }
         }
     }
 }

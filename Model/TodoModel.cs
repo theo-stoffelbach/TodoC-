@@ -1,17 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using UltimateProject.Controller;
 using UltimateProject.View;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace UltimateProject.Model
 {
@@ -165,7 +154,7 @@ namespace UltimateProject.Model
             }
         }
 
-        public static void DeleteAllTodos()
+        public static void DeletePriorityTodos(int id, string type)
         {
             List<TodoModel> todos = db.TodoModels.ToList();
 

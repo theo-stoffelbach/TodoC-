@@ -18,10 +18,10 @@ namespace UltimateProject.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsCompleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -39,6 +39,18 @@ namespace UltimateProject.Migrations
                 constraints: table =>
                 {
                 });
+
+            migrationBuilder.CreateTable(
+                name: "UserTodosModels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    User = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Todo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
         }
 
         /// <inheritdoc />
@@ -49,6 +61,9 @@ namespace UltimateProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserModels");
+
+            migrationBuilder.DropTable(
+                name: "UserTodosModels");
         }
     }
 }

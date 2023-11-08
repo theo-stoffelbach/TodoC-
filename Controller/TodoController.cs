@@ -70,9 +70,11 @@ namespace UltimateProject.Controller
         }
         public static void DeleteTodo(string[] args)
         {
-            if (!Utils.VerifArgs(args, 1)) return;
+            if (!Utils.VerifArgs(args, 1,2)) return;
 
-            if (args[0] == "all") TodoModel.DeleteAllTodos();
+            // Faire le delete type
+
+            if (args[0] == "all") TodoModel.DeletePriorityTodos(1, args[1]);
             
             int id = int.Parse(args[0]);
 
