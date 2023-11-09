@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using UltimateProject.View;
 
 namespace UltimateProject.Model
 {
-    [Keyless]
     public class UserModel
     {
+ 
         public static EFContext db = new EFContext();
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
 
@@ -18,19 +19,22 @@ namespace UltimateProject.Model
             Name = name;
         }
 
-        public static void AddTodo()
+        public static void AddUser(string str)
         {
             try
             {
                 UserModel model = new UserModel("theo");
                 db.Add(model);
                 db.SaveChanges();
-                Print.SucessDisplay("Todo Created with id : " + model.Id);
+                Print.SucessDisplay($"{model.Name} Created with id : {model.Id}");
             }
             catch (Exception err)
             {
                 Print.ErrorFatalDisplay($"with bdd to : {err}");
             }
         }
+
+
+
     }
 }

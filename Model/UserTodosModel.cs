@@ -1,29 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using UltimateProject.View;
 
 namespace UltimateProject.Model
 {
-    [Keyless]
     public class UserTodosModel
     {
+        [Key]
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int TodoId { get; set; }
+
         public static EFContext db = new EFContext();
-        private int _id { get; set; }
-        private int _userID { get; set; }
-        private int _todoId { get; set; }
+
 
         public UserTodosModel() { }
 
-        public static void AddDescTodo(int todoId, int userId)
+        public static void AddUserTodoModel(int todoId, int userId)
         {
             try
             {
                 UserTodosModel model = new UserTodosModel();
-                model._userID = userId;
-                model._todoId = todoId;
+                model.UserId = userId;
+                model.TodoId = todoId;
 
                 db.Add(model);
                 db.SaveChanges();
-                Print.SucessDisplay("Todo Created with id : " + model._id);
+                Print.SucessDisplay("Todo Created with id : " + model.Id);
             }
             catch (Exception err)
             {

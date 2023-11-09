@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UltimateProject.Controller;
 using UltimateProject.View;
 
@@ -172,13 +174,27 @@ namespace UltimateProject.Model
             db.SaveChanges();
         }
 
+        public string ShowDetailTodo(string[] listName)
+        {
+            string listNameStr = string.Join(" ", listName);
+            return $"Id : {this.Id}, " +
+                   $"Name : {this.Name}, " +
+                   $"Description : {this.Description}, " +
+                   $"Priority status : {this.Status}," +
+                   $"Due Date : {this.DueDate}," +
+                   $"Completed : {this.IsCompleted}," +
+                   $"Users : {listNameStr}";
+        }
+
         public override string ToString()
         {
             return $"Id : {Id}, " +
                 $"Name : {Name}, " +
                 $"Description : {Description}, " +
                 $"Priority status : {Status}," +
-                $"Due Date : {DueDate},";
+                $"Due Date : {DueDate}," +
+                $"Completed : {this.IsCompleted},";
+;
         }
 
     }

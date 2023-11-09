@@ -33,7 +33,6 @@ namespace UltimateProject.Controller
             {
                 PriorityStatus status = Utils.ChangeStringToPriority(args[2]);
                 DateTime date = Utils.ChangeStringToDate(args[3]);
-
                 model = new TodoModel(args[0], args[1], status, date);
             }
 
@@ -54,6 +53,22 @@ namespace UltimateProject.Controller
             });
             Print.Display("");
         }
+
+
+        public static void ReadDetailsTodos(string[] args)
+        {
+            if (!Utils.VerifArgs(args, 0)) return;
+
+            List<TodoModel> todos = TodoModel.ReadTodos();
+
+            Print.Display("");
+            todos.ForEach(todo =>
+            {
+                Print.Display(todo.ToString());
+            });
+            Print.Display("");
+        }
+
 
         // updatetodo 5 TestDB DescDB 
         public static void UpdateTodos(string[] args)

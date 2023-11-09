@@ -27,16 +27,18 @@ namespace UltimateProject.Controller
             {
                 { "exit", () => Environment.Exit(0)},
                 { "createtodo", () => TodoController.AddTodo(_arguments)},
-                { "readtodos",  () => TodoController.ReadTodos(_arguments)},
                 { "updatetodo", () => TodoController.UpdateTodos(_arguments)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments)},
                 { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments)},
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)},
+                { "showtodos",  () => TodoController.ReadTodos(_arguments)},
+                { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments)},
                 { "showstats", () => Stats.Show()},
+                { "createuser", () => UserController.AddUser(_arguments)},
+                { "addusertodo", () => TodoUserController.AddUserTodo(_arguments)},
                 { "zip", () => logger.ZipAllLogs()}
             };
-
         }
 
         public static Menu GetInstance()
@@ -60,23 +62,19 @@ namespace UltimateProject.Controller
             Print.PrintGetValue("Enter a command");
             string inputUser = Console.ReadLine();
 
-
             string[] command = inputUser.Split(' ');
             _chooseUser = command[0].ToLower();
             _arguments = command.Skip(1).ToArray();
 
             if (ChooseMenu.ContainsKey(_chooseUser))
             {
-                Action valeur = ChooseMenu[_chooseUser.ToLower()];
-                valeur();
-                
+                ChooseMenu[_chooseUser.ToLower()](); // Here to execute command
                 logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
             }
             else
             {
                 Print.ErrorDisplay("Command not found, write : 'help' if you want");
             }
-
             MenuTest();
         }
 
@@ -91,8 +89,7 @@ namespace UltimateProject.Controller
 
             if (ChooseMenu.ContainsKey(_chooseUser))
             {
-                Action valeur = ChooseMenu[_chooseUser.ToLower()];
-                valeur();
+                ChooseMenu[_chooseUser.ToLower()]();
             }
             else
             {
