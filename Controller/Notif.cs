@@ -1,10 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UltimateProject.View;
+﻿using UltimateProject.View;
 
 namespace UltimateProject.Controller
 {
@@ -12,7 +6,6 @@ namespace UltimateProject.Controller
     {
         private int _id;
         private DateTime _date;
-        
 
         public Notif(int id)
         {

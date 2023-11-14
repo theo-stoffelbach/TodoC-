@@ -17,5 +17,10 @@ namespace UltimateProject.Controller
 
             UserModel.AddUser(args[0]);
         }
+
+        public static List<UserModel> userModels(List<int> listUsersId)
+        {
+            return UserModel.SearchUserWithId(listUsersId);
+        }
     }
 }

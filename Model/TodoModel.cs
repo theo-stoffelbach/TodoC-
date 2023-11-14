@@ -1,6 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using UltimateProject.Controller;
 using UltimateProject.View;
 
@@ -24,8 +27,9 @@ namespace UltimateProject.Model
         public DateTime CreationDate { get; set; }
 
         public DateTime? DueDate { get; set; }
-
         public bool IsCompleted { get; set; }
+        [NotMapped] public List<int> TodosId { get; set; }
+
 
         public TodoModel() { }
         public TodoModel(string name, PriorityStatus priorityStatus, DateTime dueDate)
@@ -76,6 +80,27 @@ namespace UltimateProject.Model
                 return null;
             }
             return todoModel;
+        }
+
+        public static List<TodoModel> ReadTodosWithId(List<int> listUsersId)
+        {
+            try
+            {
+                List<TodoModel> todoList = db.TodoModels.Where(todo => listUsersId.Contains(todo.Id)).ToList();
+
+                if (todoList.Count == 0)
+                {
+                    Print.ErrorDisplay($"Il n'y a pas de todo avec le User (Id) mentionnés.");
+                    return null;
+                }
+
+                return todoList;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
+                return null;
+            }
         }
 
         public static void ActivateTodo(int id)
@@ -186,6 +211,21 @@ namespace UltimateProject.Model
                    $"Users : {listNameStr}";
         }
 
+        public static void ExportToCsv()
+        {
+            List<TodoModel> todoModels = ReadTodos();
+            string csvFilePath = AppDomain.CurrentDomain.BaseDirectory + "../../../csv/db.csv";
+
+            using (StreamWriter writer = new StreamWriter(csvFilePath, false, Encoding.UTF8))
+            {
+                writer.WriteLine("Id;Name;Description;PriorityStatus;CreationDate;DueDate;IsCompleted");
+                foreach (var todo in todoModels)
+                {
+                    writer.WriteLine($"{todo.Id};{todo.Name};{todo.Description};{todo.Status};{todo.CreationDate};{todo.DueDate};{todo.IsCompleted}");
+                }
+            }
+        }
+
         public override string ToString()
         {
             return $"Id : {Id}, " +
@@ -194,7 +234,16 @@ namespace UltimateProject.Model
                 $"Priority status : {Status}," +
                 $"Due Date : {DueDate}," +
                 $"Completed : {this.IsCompleted},";
-;
+        }
+        public string ToString(List<UserModel> list)
+        {
+            return @$"Id : {Id}, " +
+                $"Name : {Name}, " +
+                $"Description : {Description}, " +
+                $"Priority status : {Status}," +
+                $"User : {String.Join(", ", list.Select(user => user.Name))} ({list.Count})," +  
+                $"Due Date : {DueDate}," +
+                $"Completed : {this.IsCompleted},";
         }
 
     }

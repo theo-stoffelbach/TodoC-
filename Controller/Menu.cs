@@ -1,10 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TP_Theo_Stoffelbach.Controller;
+﻿using TP_Theo_Stoffelbach.Controller;
 using UltimateProject.Model;
 using UltimateProject.View;
 
@@ -19,7 +13,7 @@ namespace UltimateProject.Controller
         public static Dictionary<string, Action> ChooseMenu;
 
         private static Menu _instance = null;
-        private static Logger logger = new Logger();
+        private static Logger _logger = new Logger();
 
         private Menu()
         {
@@ -31,13 +25,18 @@ namespace UltimateProject.Controller
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments)},
                 { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments)},
+                { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments)},
+
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)},
                 { "showtodos",  () => TodoController.ReadTodos(_arguments)},
-                { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments)},
                 { "showstats", () => Stats.Show()},
+                { "zip", () => _logger.ZipAllLogs()},
+                { "csv", () => TodoModel.ExportToCsv()},
+
                 { "createuser", () => UserController.AddUser(_arguments)},
+
                 { "addusertodo", () => TodoUserController.AddUserTodo(_arguments)},
-                { "zip", () => logger.ZipAllLogs()}
+                
             };
         }
 
@@ -69,7 +68,7 @@ namespace UltimateProject.Controller
             if (ChooseMenu.ContainsKey(_chooseUser))
             {
                 ChooseMenu[_chooseUser.ToLower()](); // Here to execute command
-                logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
+                _logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
             }
             else
             {

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="log\" />
+    <Folder Include="csv\" />
     <Folder Include="zip\" />
   </ItemGroup>
 

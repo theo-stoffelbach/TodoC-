@@ -6,7 +6,6 @@ namespace TP_Theo_Stoffelbach.Controller
 {
     public class Stats
     {
-        private static Stats instance = null;
         private static int _taskCompleted;
         private static int _tasksCount;
         private static int _taskNotCompleted;

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UltimateProject.Model;
+﻿using UltimateProject.Model;
 using UltimateProject.View;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace UltimateProject.Controller
 {
@@ -26,15 +20,10 @@ namespace UltimateProject.Controller
         }
         public static bool VerifArgsWithoutPrint(string[] args, int nbArg)
         {
-            if (args.Length == nbArg)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (args.Length == nbArg) return true;
+            else return false;
         }
+
         public static bool VerifArgs(string[] args, int minNbArgs, int maxNbArgs)
         {
             if (args.Length >= minNbArgs && args.Length <= maxNbArgs)
@@ -68,6 +57,13 @@ namespace UltimateProject.Controller
             };
         }
 
+        public static int ConvStringToInt(string inputUser)
+        {
+            if (int.TryParse(inputUser, out int result)) return result;
+            Print.ErrorDisplay("Merci de choisir une vrai membre");
+            return ConvStringToInt(Console.ReadLine());
+        }
+
         public static bool ConvStringToBool(string inputUser)
         {
             if (bool.TryParse(inputUser, out bool result)) return result;
@@ -81,6 +77,7 @@ namespace UltimateProject.Controller
             {
                 {"priority",() => TodoController.FilterCondition(ChangeStringToPriority(input),todos) },
                 {"date",() => TodoController.FilterCondition(ChangeStringToDate(input),todos) },
+                {"taskuser",() => TodoController.FilterCondition(ConvStringToInt(input),todos) },
                 {"completed",() => TodoController.FilterCondition(ConvStringToBool(input),todos) },
             };
         }

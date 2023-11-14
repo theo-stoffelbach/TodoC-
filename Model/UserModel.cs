@@ -34,7 +34,48 @@ namespace UltimateProject.Model
             }
         }
 
+        public static UserModel SearchUserWithId(int id)
+        {
+            try
+            {
+                UserModel userModel = db.UserModels.Find(id);
+                if (userModel == null)
+                {
+                    Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {id}");
+                    return null;
+                }
+                return userModel;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
+            }
 
+            return null;
+        }
+
+        public static List<UserModel> SearchUserWithId(List<int> listId)
+        {
+            try
+            {
+                List<UserModel> userProfiles = db.UserModels.Where(user => listId.Contains(user.Id)).ToList();
+
+                if (userProfiles.Count == 0)
+                {
+                    Print.ErrorDisplay($"Il n'y a pas d'utilisateur avec les IDs mentionnés.");
+                    return null;
+                }
+
+                return userProfiles;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
+                return null;
+            }
+
+            return null;
+        }
 
     }
 }

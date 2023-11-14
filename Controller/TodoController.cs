@@ -35,8 +35,10 @@ namespace UltimateProject.Controller
                 DateTime date = Utils.ChangeStringToDate(args[3]);
                 model = new TodoModel(args[0], args[1], status, date);
             }
-
             TodoModel todo = TodoModel.AddTodo(model);
+
+            UserTodosModel.AddUserTodoModel(todo.Id, 1);
+
             if (Utils.VerifArgsWithoutPrint(args,3) && todo != null) Menu.GetInstance().AddNotifTodo(todo.Id);
         }
 
@@ -54,18 +56,21 @@ namespace UltimateProject.Controller
             Print.Display("");
         }
 
-
         public static void ReadDetailsTodos(string[] args)
         {
-            if (!Utils.VerifArgs(args, 0)) return;
+            if (!Utils.VerifArgs(args, 1)) return;
 
-            List<TodoModel> todos = TodoModel.ReadTodos();
+            int id = int.Parse(args[0]);
+
+            TodoModel todo = TodoModel.ReadTodos(id);
+
+            todo.TodosId = TodoUserController.ReadUserTodosModelWithId(todo.Id);
+            List<UserModel> users = UserController.userModels(todo.TodosId);
+
+            if (users == null) return;
 
             Print.Display("");
-            todos.ForEach(todo =>
-            {
-                Print.Display(todo.ToString());
-            });
+            Print.Display(todo.ToString(users));
             Print.Display("");
         }
 
@@ -138,10 +143,7 @@ namespace UltimateProject.Controller
         {
             foreach (var todo in todos)
             {
-                if (priority == todo.Status)
-                {
-                    Console.WriteLine($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
-                }; 
+                if (priority == todo.Status) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
 
@@ -149,10 +151,7 @@ namespace UltimateProject.Controller
         {
             foreach (var todo in todos)
             {
-                if (dateTime == todo.DueDate)
-                {
-                    Console.WriteLine($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
-                };
+                if (dateTime == todo.DueDate) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
 
@@ -160,13 +159,28 @@ namespace UltimateProject.Controller
         {
             foreach (var todo in todos)
             {
-                if (isCompleted == todo.IsCompleted)
-                {
-                    Console.WriteLine($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
-                };
+                if (isCompleted == todo.IsCompleted) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
-        
+        public static void FilterCondition(int userId, List<TodoModel> todos)
+        {
+            List<UserTodosModel> listUserTodosId = UserTodosModel.ReadIdUserModel(userId);
+            List<int> listUsersId = listUserTodosId.Select(userstodo => userstodo.TodoId).ToList();
+            List<TodoModel> listTodos = ReadTodosWithId(listUsersId);
+
+            Print.Display("");
+            listTodos.ForEach(todo =>
+            {
+                Print.Display(todo.ToString());
+            });
+            Print.Display("");
+        }
+
+        public static List<TodoModel> ReadTodosWithId(List<int> listUsersId)
+        {
+            return TodoModel.ReadTodosWithId(listUsersId);
+        }
+
         public static TodoModel ChangeTodoValue(TodoModel todoOrigin, TodoModel todoValue)
         {
             if (todoValue == null) return todoOrigin;
@@ -178,8 +192,6 @@ namespace UltimateProject.Controller
 
             return todoOrigin;
         }
-
-
 
     }
 }

@@ -22,15 +22,42 @@ namespace UltimateProject.Model
             {
                 UserTodosModel model = new UserTodosModel();
                 model.UserId = userId;
-                model.TodoId = todoId;
+                model.TodoId = todoId; 
 
                 db.Add(model);
                 db.SaveChanges();
-                Print.SucessDisplay("Todo Created with id : " + model.Id);
+                //Print.SucessDisplay("TodoUser Created with id : " + model.Id);
             }
             catch (Exception err)
             {
-                Print.ErrorFatalDisplay($"with bdd to : {err}");
+                Print.ErrorDisplay($"with bdd to : {err}");
+            }
+        }
+
+        public static List<UserTodosModel> ReadIdTodoModel(int todoId)
+        {
+            try
+            {
+                var resultat = db.UserTodosModels.Where(e => e.TodoId == todoId).ToList();
+                return resultat;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorDisplay($"with bdd to : {err}");
+                return null;
+            }
+        }
+        public static List<UserTodosModel> ReadIdUserModel(int userId)
+        {
+            try
+            {
+                return db.UserTodosModels.Where(e => e.UserId == userId).ToList();
+
+            }
+            catch (Exception err)
+            {
+                Print.ErrorDisplay($"with bdd to : {err}");
+                return null;
             }
         }
 
