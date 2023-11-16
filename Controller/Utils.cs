@@ -60,7 +60,7 @@ namespace UltimateProject.Controller
         public static int ConvStringToInt(string inputUser)
         {
             if (int.TryParse(inputUser, out int result)) return result;
-            Print.ErrorDisplay("Merci de choisir une vrai membre");
+            Print.ErrorDisplay("Merci de choisir une vrai nombre");
             return ConvStringToInt(Console.ReadLine());
         }
 
@@ -69,6 +69,14 @@ namespace UltimateProject.Controller
             if (bool.TryParse(inputUser, out bool result)) return result;
             Print.ErrorDisplay("Please choose a really value for Todo completed ( true or false )");
             return ConvStringToBool(Console.ReadLine());
+        }
+
+        public static int ConvStringToIntCommand(string inputUser)
+        {
+            if (int.TryParse(inputUser, out int result)) return result;
+            Print.ErrorDisplay("Ce que vous avez saissie n'est pas un nombre");
+            Print.PrintGetValue("Merci de choisir une nombre valable");
+            return ConvStringToInt(Console.ReadLine());
         }
 
         public static Dictionary<string, Action> createDictionaryFilter(string input,List<TodoModel> todos)

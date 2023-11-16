@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,88 @@ namespace UltimateProject.Controller
 
     public class TodoController
     {
+
+        public static void readFile() //string[] args
+        {
+            string cheminDossier = @"../../../commandFile/";
+            string extensionRecherchee = ".txt";
+            string[] fichiers = Directory.GetFiles(cheminDossier)
+                                         .Where(fichier => Path.GetExtension(fichier) == extensionRecherchee)
+                                         .ToArray();
+
+            if (fichiers.Count() == 0)
+            {
+                Print.ErrorDisplay("Vous n'avez aucun fichier de commandes.");
+                return;
+            }
+
+            Print.Display("\nMerci de choisir entre : ");
+            Print.Display("0 : sortir ");
+            int i = 1;
+            foreach (string fichier in fichiers)
+            {
+                string[] pathfile = fichier.Split("/");
+                string filename = pathfile[pathfile.Count() - 1].Split(".")[0] ;
+                Console.WriteLine($"{i} : {filename}");
+                i++;
+            }
+
+            Print.PrintGetValue("\nVotre choix (entré un nombre)");
+            int choice = Utils.ConvStringToIntCommand(Console.ReadLine());
+            if (choice == 0) return;
+            if (choice > fichiers.Count() || choice < 0)
+            {
+                Print.ErrorDisplay($"Votre nombre n'est pas entre 1 et {fichiers.Count()}");
+                readFile();
+                return;
+            }
+            Print.Display($"test : {choice}\n");
+
+            using (StreamReader sr = new StreamReader(fichiers[choice - 1]))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string ligne = sr.ReadLine();
+                    Console.WriteLine(ligne);
+
+                    Menu menu = Menu.GetInstance();
+                    menu.ReadFileLine(ligne);
+                    
+                }
+            }
+
+
+            Print.SucessDisplay("END ReadFile");
+        }
+
+        public static void ImportFromCsv(string[] args)
+        {
+            if (!Utils.VerifArgs(args, 1)) return;
+            
+            string csvFilePath = args[0];
+            string[] lines = File.ReadAllLines("../../../csv/" + csvFilePath);
+
+            foreach (var line in lines.Skip(1))
+            {
+                var todo = ParseCsvValueToTodo(line);
+
+                TodoModel.AddTodo(todo);
+            }
+        }
+
+        private static TodoModel ParseCsvValueToTodo(string line)
+        {
+            string[] values = line.Split(';');
+            return new TodoModel
+            {
+                Name = values[1],
+                Description = values[2],
+                Status = Enum.TryParse(values[3], out PriorityStatus status) ? status : (PriorityStatus?)null,
+                CreationDate = DateTime.TryParse(values[4], out DateTime creationDate) ? creationDate : DateTime.MinValue,
+                DueDate = DateTime.TryParse(values[5], out DateTime dueDate) ? (DateTime?)dueDate : null,
+                IsCompleted = bool.TryParse(values[6], out bool isCompleted) && isCompleted
+            };
+        }
 
         /// <summary>
         /// The command allows for create a new Task and params are : 
@@ -133,10 +216,6 @@ namespace UltimateProject.Controller
             string input = Console.ReadLine();
 
             FilterTodo(new string[] { args[0], input });
-        }
-        public static void NotificationTodo(string[] args)
-        {
-
         }
 
         public static void FilterCondition(PriorityStatus priority,List<TodoModel> todos)

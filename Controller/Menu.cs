@@ -31,7 +31,11 @@ namespace UltimateProject.Controller
                 { "showtodos",  () => TodoController.ReadTodos(_arguments)},
                 { "showstats", () => Stats.Show()},
                 { "zip", () => _logger.ZipAllLogs()},
-                { "csv", () => TodoModel.ExportToCsv()},
+
+                { "importcsv", () => TodoController.ImportFromCsv(_arguments)},
+                { "exportcsv", () => TodoModel.ExportToCsv()},
+
+                { "readfile", () => TodoController.readFile()},
 
                 { "createuser", () => UserController.AddUser(_arguments)},
 
@@ -75,6 +79,19 @@ namespace UltimateProject.Controller
                 Print.ErrorDisplay("Command not found, write : 'help' if you want");
             }
             MenuTest();
+        }
+        public bool ReadFileLine(string Command)
+        {
+            if (ChooseMenu.ContainsKey(Command))
+            {
+                ChooseMenu[Command.ToLower()](); // Here to execute command
+                return true;
+            }
+            else
+            {
+                Print.ErrorDisplay($"Error to Execute this : {Command}");
+                return false;
+            }
         }
 
         public void MenuFilter()

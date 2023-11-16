@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using UltimateProject.View;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TP_Theo_Stoffelbach.Controller
 {
@@ -27,7 +25,6 @@ namespace TP_Theo_Stoffelbach.Controller
                 CreateFile();
             }
 
-
         }
 
         public void ZipAllLogs()
@@ -43,12 +40,10 @@ namespace TP_Theo_Stoffelbach.Controller
                 catch (Exception ex){
                     Print.ErrorDisplay(ex.ToString());
                 }
-
-
             }
             else
             {
-                Console.WriteLine("No log, yet");
+                Print.ErrorDisplay("No log, yet");
             }
 
         }
@@ -79,7 +74,7 @@ namespace TP_Theo_Stoffelbach.Controller
             }
             catch (IOException e)
             {
-                Console.WriteLine("Une erreur est survenue lors de l'ajout du texte au fichier : " + e.Message);
+                Print.ErrorDisplay($"Une erreur est survenue lors de l'ajout du texte au fichier : {e.Message}");
             }
         }
 
@@ -98,13 +93,13 @@ namespace TP_Theo_Stoffelbach.Controller
                     File.Delete(fichier);
                 }
 
-                File.Create(path);
+                File.Create(path);  
             }
             catch (Exception ex)
             {
-                Console.Write("test : " + ex.ToString());
+                Print.ErrorDisplay($"test : {ex.ToString()}");
             }
-        }
+        }                                                                                                                                                                   
 
         private string GetPathFile()
         {
@@ -114,7 +109,6 @@ namespace TP_Theo_Stoffelbach.Controller
             string cheminAbsolu = AppDomain.CurrentDomain.BaseDirectory + "../../../log";
 
             string cheminDuFichier = Path.Combine(cheminAbsolu, formattedDate);
-
 
             return cheminDuFichier;
         }
