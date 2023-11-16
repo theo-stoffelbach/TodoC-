@@ -82,9 +82,13 @@ namespace UltimateProject.Controller
         }
         public bool ReadFileLine(string Command)
         {
-            if (ChooseMenu.ContainsKey(Command))
+            string[] command = Command.Split(' ');
+            _chooseUser = command[0].ToLower();
+            _arguments = command.Skip(1).ToArray();
+
+            if (ChooseMenu.ContainsKey(_chooseUser))
             {
-                ChooseMenu[Command.ToLower()](); // Here to execute command
+                ChooseMenu[_chooseUser.ToLower()](); // Here to execute command
                 return true;
             }
             else

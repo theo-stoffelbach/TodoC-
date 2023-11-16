@@ -56,7 +56,7 @@ namespace UltimateProject.Controller
                 while (!sr.EndOfStream)
                 {
                     string ligne = sr.ReadLine();
-                    Console.WriteLine(ligne);
+                    //Console.WriteLine(ligne);
 
                     Menu menu = Menu.GetInstance();
                     menu.ReadFileLine(ligne);
