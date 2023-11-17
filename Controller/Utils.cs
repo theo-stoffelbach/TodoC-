@@ -60,8 +60,9 @@ namespace UltimateProject.Controller
         public static int ConvStringToInt(string inputUser)
         {
             if (int.TryParse(inputUser, out int result)) return result;
-            Print.ErrorDisplay("Merci de choisir une vrai nombre");
-            return ConvStringToInt(Console.ReadLine());
+            Print.ErrorDisplay("Ce que vous avez saissie n'est pas un nombre");
+            Print.PrintGetValue("Merci de choisir une nombre valable");
+            return ConvStringToInt(Console.ReadLine()); ;
         }
 
         public static bool ConvStringToBool(string inputUser)
@@ -77,6 +78,33 @@ namespace UltimateProject.Controller
             Print.ErrorDisplay("Ce que vous avez saissie n'est pas un nombre");
             Print.PrintGetValue("Merci de choisir une nombre valable");
             return ConvStringToInt(Console.ReadLine());
+        }
+
+        public static bool TestTypeStringToStatus(string status)
+        {
+            if (Enum.TryParse(status, out PriorityStatus _)) return true;
+            Print.ErrorDisplay("Command Error is not a priority");
+            return false;
+        }
+        public static bool TestTypeStringToDate(string dateString)
+        {
+            if (DateTime.TryParse(dateString, out _)) return true;
+            Print.ErrorDisplay("Command Error is not a date");
+            return false;
+        }
+        public static bool TestTypeStringToInt(string status)
+        {
+            if (int.TryParse(status, out _)) return true;
+            Print.ErrorDisplay("Command Error is not an int");
+            return false;
+        }
+
+        public static bool TestTypeStringToIntOrEnum(string status)
+        {
+            if (int.TryParse(status, out _) || Enum.TryParse(status, out PriorityStatus _)) return true;
+
+            Print.ErrorDisplay("Command Error is not an int or a priority");
+            return false;
         }
 
         public static Dictionary<string, Action> createDictionaryFilter(string input,List<TodoModel> todos)

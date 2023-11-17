@@ -9,6 +9,7 @@ namespace UltimateProject.Controller
     {
         private static string _chooseUser;
         private static string[] _arguments;
+        private static bool _readOnly;
         public List<Notif> NotifList = new List<Notif>();
         public static Dictionary<string, Action> ChooseMenu;
 
@@ -20,15 +21,15 @@ namespace UltimateProject.Controller
             ChooseMenu = new Dictionary<string, Action>
             {
                 { "exit", () => Environment.Exit(0)},
-                { "createtodo", () => TodoController.AddTodo(_arguments)},
-                { "updatetodo", () => TodoController.UpdateTodos(_arguments)},
-                { "deletetodo", () => TodoController.DeleteTodo(_arguments)},
-                { "activatetodo", () => TodoController.ActivateTodo(_arguments)},
-                { "adddesctodo",() => TodoController.AddDescTodo(_arguments)},
-                { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments)},
+                { "createtodo", () => TodoController.AddTodo(_arguments,_readOnly)},
+                { "updatetodo", () => TodoController.UpdateTodos(_arguments,_readOnly)},
+                { "deletetodo", () => TodoController.DeleteTodo(_arguments,_readOnly)},
+                { "activatetodo", () => TodoController.ActivateTodo(_arguments,_readOnly)},
+                { "adddesctodo",() => TodoController.AddDescTodo(_arguments,_readOnly)},
+                { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments,_readOnly)},
 
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)},
-                { "showtodos",  () => TodoController.ReadTodos(_arguments)},
+                { "showtodos",  () => TodoController.ReadTodos()},
                 { "showstats", () => Stats.Show()},
                 { "zip", () => _logger.ZipAllLogs()},
 
@@ -37,9 +38,9 @@ namespace UltimateProject.Controller
 
                 { "readfile", () => TodoController.readFile()},
 
-                { "createuser", () => UserController.AddUser(_arguments)},
+                { "createuser", () => UserController.AddUser(_arguments, _readOnly)},
 
-                { "addusertodo", () => TodoUserController.AddUserTodo(_arguments)},
+                { "addusertodo", () => TodoUserController.AddUserTodo(_arguments, _readOnly)},
                 
             };
         }
@@ -68,6 +69,7 @@ namespace UltimateProject.Controller
             string[] command = inputUser.Split(' ');
             _chooseUser = command[0].ToLower();
             _arguments = command.Skip(1).ToArray();
+            _readOnly = false;
 
             if (ChooseMenu.ContainsKey(_chooseUser))
             {
@@ -85,6 +87,7 @@ namespace UltimateProject.Controller
             string[] command = Command.Split(' ');
             _chooseUser = command[0].ToLower();
             _arguments = command.Skip(1).ToArray();
+            _readOnly = true;
 
             if (ChooseMenu.ContainsKey(_chooseUser))
             {

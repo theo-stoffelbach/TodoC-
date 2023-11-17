@@ -52,7 +52,19 @@ namespace UltimateProject.Model
             try
             {
                 return db.UserTodosModels.Where(e => e.UserId == userId).ToList();
+            }
+            catch (Exception err)
+            {
+                Print.ErrorDisplay($"with bdd to : {err}");
+                return null;
+            }
+        }
 
+        public static List<UserTodosModel> DeleteAllRefOfTodo(int userId)
+        {
+            try
+            {
+                return db.UserTodosModels.Where(e => e.UserId == userId).ToList();
             }
             catch (Exception err)
             {

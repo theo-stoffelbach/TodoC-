@@ -10,7 +10,7 @@ namespace UltimateProject.Controller
 {
     public class UserController
     {
-        public static void AddUser(string[] args)
+        public static void AddUser(string[] args, bool readOnlyMode)
         {
             if (!Utils.VerifArgs(args, 1)) return;
             Print.Display("test");

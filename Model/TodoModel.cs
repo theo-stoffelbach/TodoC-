@@ -181,7 +181,7 @@ namespace UltimateProject.Model
             }
         }
 
-        public static void DeletePriorityTodos(int id, string type)
+        public static void DeleteAllTodos()
         {
             List<TodoModel> todos = db.TodoModels.ToList();
 
@@ -195,6 +195,26 @@ namespace UltimateProject.Model
             {
                 db.TodoModels.Remove(todo);
                 Print.SucessDisplay("Delete All Todos successful");
+            }
+            db.SaveChanges();
+        }
+
+        public static void DeleteTodos(PriorityStatus status)
+        {
+            List<TodoModel> todos = db.TodoModels.Where(todo => todo.Status == status).ToList();
+
+            if (todos.Count == 0)
+            {
+                Print.ErrorDisplay("Not todos found");
+                return;
+            }
+
+            foreach (var todo in todos)
+            {
+                db.TodoModels.Remove(todo);
+                Print.SucessDisplay("Delete All Todos successful");
+                UserTodosModel.DeleteAllRefOfTodo(todo.Id);
+
             }
             db.SaveChanges();
         }

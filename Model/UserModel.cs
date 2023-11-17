@@ -34,11 +34,11 @@ namespace UltimateProject.Model
             }
         }
 
-        public static UserModel SearchUserWithId(int id)
+        public static UserModel? SearchUserWithId(int id)
         {
             try
             {
-                UserModel userModel = db.UserModels.Find(id);
+                UserModel? userModel = db.UserModels.Find(id);
                 if (userModel == null)
                 {
                     Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {id}");
@@ -54,7 +54,7 @@ namespace UltimateProject.Model
             return null;
         }
 
-        public static List<UserModel> SearchUserWithId(List<int> listId)
+        public static List<UserModel>? SearchUserWithId(List<int> listId)
         {
             try
             {
@@ -73,8 +73,6 @@ namespace UltimateProject.Model
                 Print.ErrorFatalDisplay($"with bdd to : {err}");
                 return null;
             }
-
-            return null;
         }
 
     }
