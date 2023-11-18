@@ -99,6 +99,12 @@ namespace UltimateProject.Controller
             return false;
         }
 
+        public static bool TestTypeStringToIntWithoutPrint(string status)
+        {
+            if (int.TryParse(status, out _)) return true;
+            return false;
+        }
+
         public static bool TestTypeStringToIntOrEnum(string status)
         {
             if (int.TryParse(status, out _) || Enum.TryParse(status, out PriorityStatus _)) return true;

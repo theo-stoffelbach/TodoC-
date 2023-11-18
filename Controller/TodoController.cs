@@ -185,12 +185,14 @@ namespace UltimateProject.Controller
         public static void DeleteTodo(string[] args, bool readOnlyMode)
         {
             if (!Utils.VerifArgs(args, 1,2)) return;
+            Print.SucessDisplay($"Test 3");
 
             if (args[0] == "all")
             {
                 TodoModel.DeleteAllTodos();
                 return;
             }
+            Print.SucessDisplay($"Test 2");
 
             if (readOnlyMode)
             {
@@ -198,14 +200,21 @@ namespace UltimateProject.Controller
                 if (args.Length == 1 && Utils.TestTypeStringToDate(args[1])) return;
             };
 
-            if(args.Length == 1)
+            Print.SucessDisplay($"Test 1");
+
+
+            if (args.Length == 1 && !Utils.TestTypeStringToIntWithoutPrint(args[0]))
             {
                 PriorityStatus status = Utils.ChangeStringToPriority(args[0]);
                 TodoModel.DeleteTodos(status);
             }
 
+
             int id = int.Parse(args[0]);
 
+            Print.SucessDisplay($"id : {id}");
+
+            TodoUserController.DeleteAllRefOfTodo(id);
             TodoModel.DeleteTodo(id);
         }
         public static void ActivateTodo(string[] args, bool readOnlyMode)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using UltimateProject.Controller;
 using UltimateProject.View;
 
 namespace UltimateProject.Model
@@ -71,6 +72,17 @@ namespace UltimateProject.Model
                 Print.ErrorDisplay($"with bdd to : {err}");
                 return null;
             }
+        }
+
+        public static void DeleteAllRefOfTodoModel(int todoId)
+        {
+            List<UserTodosModel> listUserTodoId = db.UserTodosModels.Where(e => e.TodoId == todoId).ToList();
+            Print.Display("test : " + listUserTodoId.Count);
+            foreach (var userTodo in listUserTodoId)
+            {
+                db.Remove(userTodo);
+            }
+            db.SaveChanges();
         }
 
     }

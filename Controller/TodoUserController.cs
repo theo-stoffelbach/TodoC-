@@ -40,14 +40,9 @@ namespace UltimateProject.Controller
             List<UserTodosModel> listUserTodosModel = UserTodosModel.ReadIdTodoModel(id);
             return listUserTodosModel.Select(userstodo => userstodo.UserId).ToList();
         }
-        public static List<int> DeleteAllRefOfTodo(int todoId)
+        public static void DeleteAllRefOfTodo(int todoId)
         {
-            List<UserTodosModel> listUserTodosModel = UserTodosModel.ReadIdTodoModel(todoId);
-            foreach (var userTodo in listUserTodosModel)
-            {
-                userTodo.delete();
-            }
-            return listUserTodosModel.Select(userstodo => userstodo.UserId).ToList();
+            UserTodosModel.DeleteAllRefOfTodoModel(todoId);
         }
 
 
