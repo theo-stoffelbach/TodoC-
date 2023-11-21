@@ -35,7 +35,7 @@ namespace TP_Theo_Stoffelbach.Controller
             {
                 try {   
                     ZipToFile(path);
-                    Print.SucessDisplay("Zip created :) ");
+                    Print.SuccessDisplay("Zip created :) ");
                 }
                 catch (Exception ex){
                     Print.ErrorDisplay(ex.ToString());

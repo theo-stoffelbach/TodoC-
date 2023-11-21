@@ -26,7 +26,7 @@ namespace UltimateProject.Model
                 UserModel model = new UserModel("theo");
                 db.Add(model);
                 db.SaveChanges();
-                Print.SucessDisplay($"{model.Name} Created with id : {model.Id}");
+                Print.SuccessDisplay($"{model.Name} Created with id : {model.Id}");
             }
             catch (Exception err)
             {

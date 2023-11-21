@@ -1,5 +1,4 @@
-﻿using UltimateProject.Controller;
-using UltimateProject.Model;
+﻿using UltimateProject.Model;
 using UltimateProject.View;
 
 namespace TP_Theo_Stoffelbach.Controller

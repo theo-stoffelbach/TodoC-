@@ -14,13 +14,13 @@ namespace UltimateProject.Controller
     {
         public static void AddUserTodo(string[] args, bool readOnlyMode)
         {
-            if(!Utils.VerifArgs(args,2)) return;
+            
+            if ( !Verif.HasArgsLength(args,2)) return;
 
             int idTodo = int.Parse(args[0]);
             int idUser = int.Parse(args[1]);
 
-            if (VerifAlreadyExist(idTodo,idUser)) return;
-
+            if (VerifAlreadyExist(idTodo, idUser)) return;
             UserTodosModel.AddUserTodoModel(idUser,idTodo);
         }
 

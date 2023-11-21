@@ -27,7 +27,7 @@ namespace UltimateProject.Model
 
                 db.Add(model);
                 db.SaveChanges();
-                //Print.SucessDisplay("TodoUser Created with id : " + model.Id);
+                Print.SuccessDisplay("TodoUser Created with id : " + model.Id);
             }
             catch (Exception err)
             {

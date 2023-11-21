@@ -13,7 +13,7 @@ namespace UltimateProject.View
         {
             Console.Write($"{message} : ");
         }
-        public static void SucessDisplay(string message)
+        public static void SuccessDisplay(string message)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
 

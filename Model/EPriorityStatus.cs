@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UltimateProject.Controller
+namespace UltimateProject.Model
 {
     public enum PriorityStatus
     {

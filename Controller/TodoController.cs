@@ -1,12 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UltimateProject.Model;
+﻿using UltimateProject.Model;
 using UltimateProject.View;
 
 namespace UltimateProject.Controller
@@ -40,7 +32,7 @@ namespace UltimateProject.Controller
             }
 
             Print.PrintGetValue("\nVotre choix (entré un nombre)");
-            int choice = Utils.ConvStringToIntCommand(Console.ReadLine());
+            int choice = Convertor.ConvStringToIntCommand(Console.ReadLine());
             if (choice == 0) return;
             if (choice > fichiers.Count() || choice < 0)
             {
@@ -64,12 +56,12 @@ namespace UltimateProject.Controller
             }
 
 
-            Print.SucessDisplay("END ReadFile");
+            Print.SuccessDisplay("END ReadFile");
         }
 
         public static void ImportFromCsv(string[] args)
         {
-            if (!Utils.VerifArgs(args, 1)) return;
+            if (!Verif.HasArgsLength(args, 1)) return;
             
             string csvFilePath = args[0];
             string[] lines = File.ReadAllLines("../../../csv/" + csvFilePath);
@@ -105,28 +97,29 @@ namespace UltimateProject.Controller
             PriorityStatus status;
             DateTime date;
 
-            if (!Utils.VerifArgs(args,4,5)) return;
+            if (!Verif.VerifArgs(args,4,5)) return;
             if (readOnlyMode)
             {
-                if (Utils.TestTypeStringToStatus(args[1])) return;
-                if (Utils.TestTypeStringToDate(args[2])) return;
-                if (Utils.TestTypeStringToInt(args[3])) return;
+                if (Verif.IsStatus(args[1])) return;
+                if (Verif.IsDate(args[2])) return;
+                if (Verif.IsInt(args[3])) return;
             };
 
-            if (UserModel.SearchUserWithId(Utils.ConvStringToInt(args[3])) == null) return;  
+            if (UserModel.SearchUserWithId(Convertor.ConvStringToInt(args[3])) == null) return;  
 
-            //if(Utils.ConvStringToInt(args[3]))
+            status = Convertor.ChangeStringToPriority(args[1]);
+            date = Convertor.ChangeStringToDate(args[2]);
 
-            status = Utils.ChangeStringToPriority(args[1]);
-            date = Utils.ChangeStringToDate(args[2]);
-            
-            Print.Display("arg : " + args.Length);
-            if (args.Length == 4) Array.Resize(ref args, args.Length + 1);
+            if (args.Length == 4)
+            {
+                Array.Resize(ref args, args.Length + 1);
+            };
+
             TodoModel model = new TodoModel(args[0], args[4], status, date);
             TodoModel todo = TodoModel.AddTodo(model);
 
-            UserTodosModel.AddUserTodoModel(todo.Id, Utils.ConvStringToInt(args[3]));
-            if (args.Length == 4) Menu.GetInstance().AddNotifTodo(todo.Id);
+            UserTodosModel.AddUserTodoModel(todo.Id, Convertor.ConvStringToInt(args[3]));
+            if (todo.Description == "") Menu.GetInstance().AddNotifTodo(todo.Id);
         }
 
         public static void ReadTodos()
@@ -143,9 +136,9 @@ namespace UltimateProject.Controller
 
         public static void ReadDetailsTodos(string[] args, bool readOnlyMode)
         {
-            if (!Utils.VerifArgs(args, 1)) return;
+            if (!Verif.HasArgsLength(args, 1)) return;
 
-            if (readOnlyMode && Utils.TestTypeStringToInt(args[1])) return;
+            if (readOnlyMode && Verif.IsInt(args[1])) return;
 
             int id = int.Parse(args[0]);
 
@@ -165,17 +158,17 @@ namespace UltimateProject.Controller
         // updatetodo 5 TestDB DescDB 
         public static void UpdateTodos(string[] args, bool readOnlyMode)
         {
-            if (!Utils.VerifArgs(args, 5)) return;
+            if (!Verif.HasArgsLength(args, 5)) return;
 
             if (readOnlyMode)
             {
-                if (Utils.TestTypeStringToStatus(args[3])) return;
-                if (Utils.TestTypeStringToDate(args[4])) return;
-                if (Utils.TestTypeStringToInt(args[0])) return;
+                if (Verif.IsStatus(args[3])) return;
+                if (Verif.IsDate(args[4])) return;
+                if (Verif.IsInt(args[0])) return;
             };
 
-            PriorityStatus status = Utils.ChangeStringToPriority(args[3]);
-            DateTime date = Utils.ChangeStringToDate(args[4]);
+            PriorityStatus status = Convertor.ChangeStringToPriority(args[3]);
+            DateTime date = Convertor.ChangeStringToDate(args[4]);
             int id = int.Parse(args[0]);
 
             TodoModel model = new TodoModel(args[1], args[2], status, date);
@@ -184,44 +177,30 @@ namespace UltimateProject.Controller
         }
         public static void DeleteTodo(string[] args, bool readOnlyMode)
         {
-            if (!Utils.VerifArgs(args, 1,2)) return;
-            Print.SucessDisplay($"Test 3");
-
-            if (args[0] == "all")
-            {
-                TodoModel.DeleteAllTodos();
-                return;
-            }
-            Print.SucessDisplay($"Test 2");
-
+            if (!Verif.VerifArgs(args, 1,2)) return;
             if (readOnlyMode)
             {
-                if (Utils.TestTypeStringToInt(args[1])) return;
-                if (args.Length == 1 && Utils.TestTypeStringToDate(args[1])) return;
+                if (Verif.IsInt(args[1])) return;
+                if (args.Length == 1 && Verif.IsDate(args[1])) return;
             };
 
-            Print.SucessDisplay($"Test 1");
-
-
-            if (args.Length == 1 && !Utils.TestTypeStringToIntWithoutPrint(args[0]))
+            if (args.Length == 1 && !Verif.IsIntWithOutError(args[0]))
             {
-                PriorityStatus status = Utils.ChangeStringToPriority(args[0]);
+                PriorityStatus status = Convertor.ChangeStringToPriority(args[0]);
                 TodoModel.DeleteTodos(status);
+                return;
             }
 
-
             int id = int.Parse(args[0]);
-
-            Print.SucessDisplay($"id : {id}");
 
             TodoUserController.DeleteAllRefOfTodo(id);
             TodoModel.DeleteTodo(id);
         }
         public static void ActivateTodo(string[] args, bool readOnlyMode)
         {
-            if (!Utils.VerifArgs(args, 1)) return;
+            if (!Verif.HasArgsLength(args, 1)) return;
 
-            if (readOnlyMode && Utils.TestTypeStringToInt(args[1])) return;
+            if (readOnlyMode && Verif.IsInt(args[1])) return;
 
             int id = int.Parse(args[0]);
 
@@ -229,9 +208,9 @@ namespace UltimateProject.Controller
         }
         public static void AddDescTodo(string[] args, bool readOnlyMode)
         {
-            if (!Utils.VerifArgs(args, 2)) return;
+            if (!Verif.HasArgsLength(args, 2)) return;
 
-            if (readOnlyMode && Utils.TestTypeStringToInt(args[0])) return;
+            if (readOnlyMode && Verif.IsInt(args[0])) return;
 
             int id = int.Parse(args[0]);
 
@@ -239,11 +218,11 @@ namespace UltimateProject.Controller
         }
         public static void FilterTodo(string[] args)
         {
-            if (!Utils.VerifArgs(args, 2)) return;
+            if (!Verif.HasArgsLength(args, 2)) return;
 
             List<TodoModel> todos = TodoModel.ReadTodos();
 
-            Dictionary<string, Action> chooseAvaliable = Utils.createDictionaryFilter(args[1], todos);
+            Dictionary<string, Action> chooseAvaliable = createDictionaryFilter(args[1], todos);
 
             if (chooseAvaliable.ContainsKey(args[0]))
             {
@@ -252,8 +231,6 @@ namespace UltimateProject.Controller
             }
             Print.ErrorDisplay($"filter Not found with {args[0]}, please choose between : 'priority','completed' or 'date'");
             string input = Console.ReadLine();
-
-            //FilterTodo(new string[] { args[0], input });
         }
 
         public static void FilterCondition(PriorityStatus priority,List<TodoModel> todos)
@@ -308,6 +285,17 @@ namespace UltimateProject.Controller
             if (todoValue.DueDate != null) todoOrigin.DueDate = todoValue.DueDate;
 
             return todoOrigin;
+        }
+
+        public static Dictionary<string, Action> createDictionaryFilter(string input, List<TodoModel> todos)
+        {
+            return new Dictionary<string, Action>
+            {
+                {"priority",() => TodoController.FilterCondition(Convertor.ChangeStringToPriority(input),todos) },
+                {"date",() => TodoController.FilterCondition(Convertor.ChangeStringToDate(input),todos) },
+                {"taskuser",() => TodoController.FilterCondition(Convertor.ConvStringToInt(input),todos) },
+                {"completed",() => TodoController.FilterCondition(Convertor.ConvStringToBool(input),todos) },
+            };
         }
 
     }

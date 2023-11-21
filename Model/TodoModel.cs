@@ -56,7 +56,7 @@ namespace UltimateProject.Model
             {
                 db.Add(todoModel);
                 db.SaveChanges();
-                Print.SucessDisplay("Todo Created with id : " + todoModel.Id);
+                Print.SuccessDisplay("Todo Created with id : " + todoModel.Id);
                 return todoModel;
             }
             catch (Exception err)
@@ -113,7 +113,7 @@ namespace UltimateProject.Model
                     tododb.IsCompleted = !tododb.IsCompleted;
                     db.Update(tododb);
                     db.SaveChanges();
-                    Print.SucessDisplay("Todo Update");
+                    Print.SuccessDisplay("Todo Update");
                     return;
                 }
                 catch (Exception ex)
@@ -134,7 +134,7 @@ namespace UltimateProject.Model
                     tododb.Description = description;
                     db.Update(tododb);
                     db.SaveChanges();
-                    Print.SucessDisplay("Todo update with the description");
+                    Print.SuccessDisplay("Todo update with the description");
                     return;
                 }
                 catch (Exception ex)
@@ -148,37 +148,39 @@ namespace UltimateProject.Model
         public static void UpdateTodo(int id, TodoModel todoModel)
         {
             TodoModel? tododb = db.TodoModels.Find(id);
-            if (tododb != null)
+            if (tododb == null)
             {
-                tododb = TodoController.ChangeTodoValue(tododb, todoModel);
-                try
-                {
-                    db.Update(tododb);
-                    db.SaveChanges();
-                    Print.SucessDisplay("Todo Update");
-                }
-                catch (Exception ex)
-                {
-                    Print.ErrorDisplay(ex.ToString());
-                }
+                Print.ErrorDisplay($"not found Todo with Id : {id}");
+                return;
             }
-            Print.ErrorDisplay($"not found Todo with Id : {id}");
+
+            tododb = TodoController.ChangeTodoValue(tododb, todoModel);
+            try
+            {
+                db.Update(tododb);
+                db.SaveChanges();
+                Print.SuccessDisplay("Todo Update");
+            }
+            catch (Exception ex)
+            {
+                Print.ErrorDisplay(ex.ToString());
+            }
+            
         }
 
         public static void DeleteTodo(int id)
         {
             TodoModel? todo = db.TodoModels.Find(id);
-
-            if (todo != null)
-            {
-                db.TodoModels.Remove(todo);
-                db.SaveChanges();
-                Print.SucessDisplay($"Delete Todo {id} successful");
-            }
-            else
+            if (todo == null)
             {
                 Console.WriteLine($"Not found id : {id}");
+                return;
             }
+
+            db.TodoModels.Remove(todo);
+            db.SaveChanges();
+            Print.SuccessDisplay($"Delete Todo {id} successful");
+
         }
 
         public static void DeleteAllTodos()
@@ -194,7 +196,7 @@ namespace UltimateProject.Model
             foreach (var todo in todos)
             {
                 db.TodoModels.Remove(todo);
-                Print.SucessDisplay("Delete All Todos successful");
+                Print.SuccessDisplay("Delete All Todos successful");
             }
             db.SaveChanges();
         }
@@ -211,8 +213,9 @@ namespace UltimateProject.Model
 
             foreach (var todo in todos)
             {
+                TodoUserController.DeleteAllRefOfTodo(todo.Id);
                 db.TodoModels.Remove(todo);
-                Print.SucessDisplay("Delete All Todos successful");
+                Print.SuccessDisplay("Delete All Todos successful");
                 UserTodosModel.DeleteAllRefOfTodo(todo.Id);
 
             }
@@ -245,7 +248,6 @@ namespace UltimateProject.Model
                 }
             }
         }
-
 
         public override string ToString()
         {
