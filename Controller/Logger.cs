@@ -10,31 +10,29 @@ namespace TP_Theo_Stoffelbach.Controller
 {
     public class Logger
     {
-        public Logger() { }
-
-        public void AddNewLogAction(string log)
+        public static void AddNewLogAction(string log)
         {
-            string path = GetPathFile();
+            string path = _GetPathFile();
 
             if (File.Exists(path))
             {
-                AddLog(log);
+                _AddLog(log);
             }
             else
             {
-                CreateFile();
+                _CreateFile();
             }
 
         }
 
-        public void ZipAllLogs()
+        public static void ZipAllLogs()
         {
-            string path = GetPathFile();
+            string path = _GetPathFile();
 
             if (File.Exists(path))
             {
                 try {   
-                    ZipToFile(path);
+                    _ZipToFile(path);
                     Print.SuccessDisplay("Zip created :) ");
                 }
                 catch (Exception ex){
@@ -48,7 +46,7 @@ namespace TP_Theo_Stoffelbach.Controller
 
         }
 
-        private void ZipToFile(string path)
+        private static void _ZipToFile(string path)
         {
             DateTime currentDate = DateTime.Now;
             string formattedDate = currentDate.ToString("dd-MM-yyyy");
@@ -61,13 +59,11 @@ namespace TP_Theo_Stoffelbach.Controller
                 throw ex;
             }
         }
-
-
-        private void AddLog(string log)
+        private static void _AddLog(string log)
         {
             try
             {
-                using (StreamWriter writer = File.AppendText(GetPathFile()))
+                using (StreamWriter writer = File.AppendText(_GetPathFile()))
                 {
                     writer.WriteLine(log);
                 }
@@ -77,10 +73,9 @@ namespace TP_Theo_Stoffelbach.Controller
                 Print.ErrorDisplay($"Une erreur est survenue lors de l'ajout du texte au fichier : {e.Message}");
             }
         }
-
-        private void CreateFile()
+        private static void _CreateFile()
         {
-            string path = GetPathFile();
+            string path = _GetPathFile();
 
             try
             {
@@ -100,8 +95,7 @@ namespace TP_Theo_Stoffelbach.Controller
                 Print.ErrorDisplay($"test : {ex.ToString()}");
             }
         }                                                                                                                                                                   
-
-        private string GetPathFile()
+        private static string _GetPathFile()
         {
             DateTime currentDate = DateTime.Now;
             string formattedDate = currentDate.ToString("dd-MM-yyyy") + ".txt";

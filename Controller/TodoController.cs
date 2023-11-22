@@ -1,102 +1,17 @@
 ﻿using UltimateProject.Model;
 using UltimateProject.View;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace UltimateProject.Controller
 {
     public class TodoController
     {
-
-        public static void readFile() //string[] args
-        {
-            string cheminDossier = @"../../../commandFile/";
-            string extensionRecherchee = ".txt";
-            string[] fichiers = Directory.GetFiles(cheminDossier)
-                                         .Where(fichier => Path.GetExtension(fichier) == extensionRecherchee)
-                                         .ToArray();
-
-            if (fichiers.Count() == 0)
-            {
-                Print.ErrorDisplay("Vous n'avez aucun fichier de commandes.");
-                return;
-            }
-
-            Print.Display("\nMerci de choisir entre : ");
-            Print.Display("0 : sortir ");
-            int i = 1;
-            foreach (string fichier in fichiers)
-            {
-                string[] pathfile = fichier.Split("/");
-                string filename = pathfile[pathfile.Count() - 1].Split(".")[0] ;
-                Console.WriteLine($"{i} : {filename}");
-                i++;
-            }
-
-            Print.PrintGetValue("\nVotre choix (entré un nombre)");
-            int choice = Convertor.ConvStringToIntCommand(Console.ReadLine());
-            if (choice == 0) return;
-            if (choice > fichiers.Count() || choice < 0)
-            {
-                Print.ErrorDisplay($"Votre nombre n'est pas entre 1 et {fichiers.Count()}");
-                readFile();
-                return;
-            }
-            Print.Display($"test : {choice}\n");
-
-            using (StreamReader sr = new StreamReader(fichiers[choice - 1]))
-            {
-                while (!sr.EndOfStream)
-                {
-                    string ligne = sr.ReadLine();
-                    //Console.WriteLine(ligne);
-
-                    Menu menu = Menu.GetInstance();
-                    menu.ReadFileLine(ligne);
-                    
-                }
-            }
-
-
-            Print.SuccessDisplay("END ReadFile");
-        }
-
-        public static void ImportFromCsv(string[] args)
-        {
-            if (!Verif.HasArgsLength(args, 1)) return;
-            
-            string csvFilePath = args[0];
-            string[] lines = File.ReadAllLines("../../../csv/" + csvFilePath);
-
-            foreach (var line in lines.Skip(1))
-            {
-                var todo = ParseCsvValueToTodo(line);
-
-                TodoModel.AddTodo(todo);
-            }
-        }
-
-        private static TodoModel ParseCsvValueToTodo(string line)
-        {
-            string[] values = line.Split(';');
-            return new TodoModel
-            {
-                Name = values[1],
-                Description = values[2],
-                Status = Enum.TryParse(values[3], out PriorityStatus status) ? status : (PriorityStatus?)null,
-                CreationDate = DateTime.TryParse(values[4], out DateTime creationDate) ? creationDate : DateTime.MinValue,
-                DueDate = DateTime.TryParse(values[5], out DateTime dueDate) ? (DateTime?)dueDate : null,
-                IsCompleted = bool.TryParse(values[6], out bool isCompleted) && isCompleted
-            };
-        }
-
         /// <summary>
         /// The command allows for create a new Task and params are : 
         /// </summary>
         /// <param name="args"> args is the parameters of User use when is active the command add</param>
         public static void AddTodo(string[] args,bool readOnlyMode)
         {
-            PriorityStatus status;
-            DateTime date;
-
             if (!Verif.VerifArgs(args,4,5)) return;
             if (readOnlyMode)
             {
@@ -105,21 +20,9 @@ namespace UltimateProject.Controller
                 if (Verif.IsInt(args[3])) return;
             };
 
-            if (UserModel.SearchUserWithId(Convertor.ConvStringToInt(args[3])) == null) return;  
+            if (UserModel.SearchUserWithId(Convertor.ConvStringToInt(args[3])) == null) return;
 
-            status = Convertor.ChangeStringToPriority(args[1]);
-            date = Convertor.ChangeStringToDate(args[2]);
-
-            if (args.Length == 4)
-            {
-                Array.Resize(ref args, args.Length + 1);
-            };
-
-            TodoModel model = new TodoModel(args[0], args[4], status, date);
-            TodoModel todo = TodoModel.AddTodo(model);
-
-            UserTodosModel.AddUserTodoModel(todo.Id, Convertor.ConvStringToInt(args[3]));
-            if (todo.Description == "") Menu.GetInstance().AddNotifTodo(todo.Id);
+            _CreateTodo(args);
         }
 
         public static void ReadTodos()
@@ -137,12 +40,11 @@ namespace UltimateProject.Controller
         public static void ReadDetailsTodos(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
-
             if (readOnlyMode && Verif.IsInt(args[1])) return;
 
-            int id = int.Parse(args[0]);
+            int id = Convertor.ConvStringToInt(args[0]);
 
-            TodoModel todo = TodoModel.ReadTodos(id);
+            TodoModel todo = TodoModel.ReadTodo(id);
 
             todo.TodosId = TodoUserController.ReadUserTodosModelWithId(todo.Id);
             List<UserModel> users = UserController.userModels(todo.TodosId);
@@ -296,6 +198,27 @@ namespace UltimateProject.Controller
                 {"taskuser",() => TodoController.FilterCondition(Convertor.ConvStringToInt(input),todos) },
                 {"completed",() => TodoController.FilterCondition(Convertor.ConvStringToBool(input),todos) },
             };
+        }
+
+
+        private static void _CreateTodo(string[] args)
+        {
+            PriorityStatus status;
+            DateTime date;
+
+            status = Convertor.ChangeStringToPriority(args[1]);
+            date = Convertor.ChangeStringToDate(args[2]);
+
+            if (args.Length == 4)
+            {
+                Array.Resize(ref args, args.Length + 1);
+            };
+
+            TodoModel model = new TodoModel(args[0], args[4], status, date);
+            TodoModel todo = TodoModel.AddTodo(model);
+
+            UserTodosModel.AddUserTodoModel(todo.Id, Convertor.ConvStringToInt(args[3]));
+            if (todo.Description == "") Menu.GetInstance().AddNotifTodo(todo.Id);
         }
 
     }

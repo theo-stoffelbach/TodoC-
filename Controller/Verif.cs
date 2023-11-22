@@ -36,6 +36,16 @@ namespace UltimateProject.Controller
             }
         }
 
+        public static bool IsEmpty(string[] str)
+        {
+            if (str.Length == 0)
+            {
+                Print.ErrorDisplay("Command Error is empty");
+                return true;
+            }
+            else return false;
+        }
+
         public static bool IsDate(string dateString)
         {
             if (DateTime.TryParse(dateString, out _)) return true;

@@ -14,14 +14,13 @@ namespace UltimateProject.Controller
         public static Dictionary<string, Action> ChooseMenu;
 
         private static Menu _instance = null;
-        private static Logger _logger = new Logger();
 
         private Menu()
         {
             ChooseMenu = new Dictionary<string, Action>
             {
                 { "exit", () => Environment.Exit(0)},
-                { "help", () => Help()},
+                { "help", () => Print.Help()},
                 { "createtodo", () => TodoController.AddTodo(_arguments,_readOnly)},
                 { "updatetodo", () => TodoController.UpdateTodos(_arguments,_readOnly)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments,_readOnly)},
@@ -32,12 +31,12 @@ namespace UltimateProject.Controller
                 { "filtertodo", () => TodoController.FilterTodo(_arguments)},
                 { "showtodos",  () => TodoController.ReadTodos()},
                 { "showstats", () => Stats.Show()},
-                { "zip", () => _logger.ZipAllLogs()},
+                { "zip", () => Logger.ZipAllLogs()},
 
-                { "importcsv", () => TodoController.ImportFromCsv(_arguments)},
-                { "exportcsv", () => TodoModel.ExportToCsv()},
+                { "importcsv", () => CSVToDb.ImportFromCsv(_arguments)},
+                { "exportcsv", () => CSVToDb.ExportToCsv()},
 
-                { "readfile", () => TodoController.readFile()},
+                { "readfile", () => ReadFile.FileCommand()},
 
                 { "createuser", () => UserController.AddUser(_arguments, _readOnly)},
 
@@ -60,7 +59,7 @@ namespace UltimateProject.Controller
             NotifList.Add(new Notif(id));
         }
 
-        public void MenuTest()
+        public void UseMenu()
         {
             Notif.TestNotifTime(NotifList);
 
@@ -75,13 +74,15 @@ namespace UltimateProject.Controller
             if (ChooseMenu.ContainsKey(_chooseUser))
             {
                 ChooseMenu[_chooseUser.ToLower()](); // Here to execute command
-                _logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
+                Logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
             }
             else
             {
                 Print.ErrorDisplay("Command not found, write : 'help' if you want");
             }
-            MenuTest();
+
+            Print.Display("");
+            UseMenu();
         }
         public bool ReadFileLine(string Command)
         {
@@ -113,32 +114,10 @@ namespace UltimateProject.Controller
 
             _ChooseMenu();
 
-            Print.Display("");
-            MenuTest();
+            UseMenu();
         }
 
-        public void Help()
-        {
-            Print.Display("\n ---------- Help ----------\n"
-            + "You have the command then what is do and after the | you have command with :"
-            + "{ XXXXXX } : obligator argument and"
-            + "[ XXXXXX ] : optionnal argument"
-            + "\n ---------- Todo ----------\n"
-            + "createtodo : Use to create a todo | Createtodo {Title} {Priority} {DateDue} {UserId} [Description]"
-            + "updatetodo: Use to update a todo | Update {Id} {Title} {Description} {Priority} {DateDue} "
-            + "deletetodo : Use to delete a todo | Deletetodo {TodoId} OR Deletetodo {Priority} OR Deletetodo all"
-            + "completedtodo : Use to complete Or not complete | completedtodo {TodoId}"
-            + "adddesctodo : Use to add a description on a todo | adddesctodo {TodoId} {Description}"
-            + "\n ---------- User ----------\n"
-            + "createuser : Use to "
-            + "\n ---------- Show ----------\n"
-            + "showdetailtodos : Use to show a more detail on a todo | showdetailtodos {TodoId}"
-            + "filtertodo: Use to update a todo | Update {Id} {Title} {Description} {Priority} {DateDue} "
-            + "showtodos : Use to delete a todo | Deletetodo {TodoId} OR Deletetodo {Priority} OR Deletetodo all"
-            + "showstats: Use to complete Or not complete | completedtodo {TodoId}"
-            + "zip : Use to add a description on a todo | adddesctodo {TodoId} {Description}");
-
-        }
+        
 
         private void _ChooseMenu()
         {
