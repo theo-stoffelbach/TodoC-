@@ -167,7 +167,6 @@ namespace UltimateProject.Model
             _db.TodoModels.Remove(todo);
             _db.SaveChanges();
             Print.SuccessDisplay($"Delete Todo {id} successful");
-
         }
 
         public static void DeleteAllTodos()

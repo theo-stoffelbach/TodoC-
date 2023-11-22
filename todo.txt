@@ -1,5 +1,4 @@
-﻿- Mettre sup [Priority]
-- Mettre verif type avec chaque fonc
+﻿- Mettre verif type avec chaque fonc
 - clean code
 - Summary
 - Filtre

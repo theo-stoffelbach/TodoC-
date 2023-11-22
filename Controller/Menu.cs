@@ -22,7 +22,7 @@ namespace UltimateProject.Controller
                 { "exit", () => Environment.Exit(0)},
                 { "help", () => Print.Help()},
                 { "createtodo", () => TodoController.AddTodo(_arguments,_readOnly)},
-                { "updatetodo", () => TodoController.UpdateTodos(_arguments,_readOnly)},
+                { "updatetodo", () => TodoController.UpdateTodo(_arguments,_readOnly)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments,_readOnly)},
                 { "completedtodo", () => TodoController.ActivateTodo(_arguments,_readOnly)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments,_readOnly)},

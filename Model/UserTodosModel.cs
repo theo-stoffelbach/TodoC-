@@ -11,7 +11,6 @@ namespace UltimateProject.Model
         public int Id { get; set; }
         public int UserId { get; set; }
         public int TodoId { get; set; }
-
         public static EFContext db = new EFContext();
 
 
@@ -77,7 +76,6 @@ namespace UltimateProject.Model
         public static void DeleteAllRefOfTodoModel(int todoId)
         {
             List<UserTodosModel> listUserTodoId = db.UserTodosModels.Where(e => e.TodoId == todoId).ToList();
-            Print.Display("test : " + listUserTodoId.Count);
             foreach (var userTodo in listUserTodoId)
             {
                 db.Remove(userTodo);

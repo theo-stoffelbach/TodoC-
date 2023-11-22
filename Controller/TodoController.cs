@@ -58,7 +58,7 @@ namespace UltimateProject.Controller
 
 
         // updatetodo 5 TestDB DescDB 
-        public static void UpdateTodos(string[] args, bool readOnlyMode)
+        public static void UpdateTodo(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 5)) return;
 
@@ -71,7 +71,7 @@ namespace UltimateProject.Controller
 
             PriorityStatus status = Convertor.ChangeStringToPriority(args[3]);
             DateTime date = Convertor.ChangeStringToDate(args[4]);
-            int id = int.Parse(args[0]);
+            int id = Convertor.ConvStringToInt(args[0]);
 
             TodoModel model = new TodoModel(args[1], args[2], status, date);
 
@@ -98,6 +98,7 @@ namespace UltimateProject.Controller
             TodoUserController.DeleteAllRefOfTodo(id);
             TodoModel.DeleteTodo(id);
         }
+
         public static void ActivateTodo(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
