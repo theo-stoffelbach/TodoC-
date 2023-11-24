@@ -34,6 +34,42 @@ namespace UltimateProject.Model
             }
         }
 
+        public static List<UserModel>? GetAllUser()
+        {
+            try
+            {
+                List<UserModel> userProfiles = db.UserModels.ToList();
+
+                if (userProfiles.Count == 0)
+                {
+                    Print.ErrorDisplay($"Il n'y a pas d'utilisateur.");
+                    return null;
+                }
+
+                return userProfiles;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
+                return null;
+            }
+        }
+
+        public static bool IsUserIdToTodos(int userId)
+        {
+            try
+            {
+                TodoModel userProfiles = (TodoModel)db.TodoModels.Select(todo => todo.UserId == userId);
+                Print.Display($"test : {userProfiles}");
+                if (userProfiles == null) return false;
+                return true;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
+                return false;
+            }
+        }
         public static UserModel? SearchUserWithId(int id)
         {
             try

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UltimateProject.Migrations
 {
     /// <inheritdoc />
-    public partial class UltimateProject : Migration
+    public partial class UltimateProjectV1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,8 @@ namespace UltimateProject.Migrations
                     Status = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,23 +34,13 @@ namespace UltimateProject.Migrations
                 name: "UserModels",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserTodosModels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    User = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Todo = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
+                    table.PrimaryKey("PK_UserModels", x => x.Id);
                 });
         }
 
@@ -61,9 +52,6 @@ namespace UltimateProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserModels");
-
-            migrationBuilder.DropTable(
-                name: "UserTodosModels");
         }
     }
 }

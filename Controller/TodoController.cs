@@ -12,7 +12,7 @@ namespace UltimateProject.Controller
         /// <param name="args"> args is the parameters of User use when is active the command add</param>
         public static void AddTodo(string[] args,bool readOnlyMode)
         {
-            if (!Verif.VerifArgs(args,4,5)) return;
+            if (!Verif.HasArgsLength(args,4,5)) return;
             if (readOnlyMode)
             {
                 if (Verif.IsStatus(args[1])) return;
@@ -46,13 +46,14 @@ namespace UltimateProject.Controller
 
             TodoModel todo = TodoModel.ReadTodo(id);
 
-            todo.TodosId = TodoUserController.ReadUserTodosModelWithId(todo.Id);
-            List<UserModel> users = UserController.userModels(todo.TodosId);
 
-            if (users == null) return;
+            // WAIT TO FIX
+            //List<UserModel> users = UserController.userModels(todo);
+
+            //if (users == null) return;
 
             Print.Display("");
-            Print.Display(todo.ToString(users));
+            //Print.Display(todo.ToString(users));
             Print.Display("");
         }
 
@@ -60,26 +61,28 @@ namespace UltimateProject.Controller
         // updatetodo 5 TestDB DescDB 
         public static void UpdateTodo(string[] args, bool readOnlyMode)
         {
-            if (!Verif.HasArgsLength(args, 5)) return;
+            if (!Verif.HasArgsLength(args, 6)) return;
 
             if (readOnlyMode)
             {
                 if (Verif.IsStatus(args[3])) return;
                 if (Verif.IsDate(args[4])) return;
                 if (Verif.IsInt(args[0])) return;
+                if (Verif.IsInt(args[5])) return;
             };
 
             PriorityStatus status = Convertor.ChangeStringToPriority(args[3]);
             DateTime date = Convertor.ChangeStringToDate(args[4]);
             int id = Convertor.ConvStringToInt(args[0]);
+            int userId = Convertor.ConvStringToInt(args[5]);
 
-            TodoModel model = new TodoModel(args[1], args[2], status, date);
+            TodoModel model = new TodoModel(args[1], args[2], status, date, userId);
 
             TodoModel.UpdateTodo(id, model);
         }
         public static void DeleteTodo(string[] args, bool readOnlyMode)
         {
-            if (!Verif.VerifArgs(args, 1,2)) return;
+            if (!Verif.HasArgsLength(args, 1,2)) return;
             if (readOnlyMode)
             {
                 if (Verif.IsInt(args[1])) return;
@@ -94,8 +97,6 @@ namespace UltimateProject.Controller
             }
 
             int id = int.Parse(args[0]);
-
-            TodoUserController.DeleteAllRefOfTodo(id);
             TodoModel.DeleteTodo(id);
         }
 
@@ -119,13 +120,27 @@ namespace UltimateProject.Controller
 
             TodoModel.AddDescTodo(id, args[1]);
         }
-        public static void FilterTodo(string[] args)
+
+        public static void ChangeTodoWithUserId(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 2)) return;
 
-            List<TodoModel> todos = TodoModel.ReadTodos();
+            if (readOnlyMode && Verif.IsInt(args[0])) return;
+            if (readOnlyMode && Verif.IsInt(args[1])) return;
 
-            Dictionary<string, Action> chooseAvaliable = createDictionaryFilter(args[1], todos);
+            int idTodo = int.Parse(args[0]);
+            int idNewUser = int.Parse(args[1]);
+                
+            TodoModel.ChangeTodoWithUserId(idTodo, idNewUser);
+        }
+
+        public static void FilterTodo(string[] args)
+        {
+            if (!Verif.HasArgsLength(args, 1,2)) return;
+
+            //List<TodoModel>? todos = TodoModel.ReadTodos();
+
+            Dictionary<string, Action> chooseAvaliable = createDictionaryFilter(args[1]);
 
             if (chooseAvaliable.ContainsKey(args[0]))
             {
@@ -136,47 +151,72 @@ namespace UltimateProject.Controller
             string input = Console.ReadLine();
         }
 
-        public static void FilterCondition(PriorityStatus priority,List<TodoModel> todos)
+        public static void FilterCondition(PriorityStatus priority)
         {
+            List<TodoModel> todos = TodoModel.ReadTodos();
             foreach (var todo in todos)
             {
                 if (priority == todo.Status) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
 
-        public static void FilterCondition(DateTime dateTime, List<TodoModel> todos)
+        public static void FilterCondition(DateTime dateTime)
         {
+            List<TodoModel> todos = TodoModel.ReadTodos();
             foreach (var todo in todos)
             {
                 if (dateTime == todo.DueDate) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
 
-        public static void FilterCondition(bool isCompleted, List<TodoModel> todos)
+        public static void FilterCondition(bool isCompleted)
         {
+            List<TodoModel> todos = TodoModel.ReadTodos();
             foreach (var todo in todos)
             {
                 if (isCompleted == todo.IsCompleted) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
-        public static void FilterCondition(int userId, List<TodoModel> todos)
+        public static void FilterCondition(int todoId)
         {
-            List<UserTodosModel> listUserTodosId = UserTodosModel.ReadIdUserModel(userId);
-            List<int> listUsersId = listUserTodosId.Select(userstodo => userstodo.TodoId).ToList();
-            List<TodoModel> listTodos = ReadTodosWithId(listUsersId);
+            TodoModel todo = ReadTodosWithId(todoId);
+            if (todo == null) return;
 
-            Print.Display("");
-            listTodos.ForEach(todo =>
+            Print.Display(todo.ToString());
+        }
+
+        public static void FilterUserHasNotTask(int todoId)
+        {
+            List<UserModel>? users = UserModel.GetAllUser();
+            List<int>? listUserId = null;
+            if (users == null) return;
+            foreach (var user in users)
             {
-                Print.Display(todo.ToString());
-            });
-            Print.Display("");
+                if (!UserModel.IsUserIdToTodos(user.Id)) listUserId.Add(user.Id);
+            }
+
+            if (listUserId == null)
+            {
+                Print.ErrorDisplay("All user has a task");
+                return;
+            };
+
+            foreach (var userId in listUserId)
+            {
+                Print.Display(userId.ToString());
+            }            
+
+            Print.Display(" --- ");
         }
 
-        public static List<TodoModel> ReadTodosWithId(List<int> listUsersId)
+        
+
+        public static TodoModel ReadTodosWithId(int todoId)
         {
-            return TodoModel.ReadTodosWithId(listUsersId);
+            return TodoModel.ReadTodosWithId(todoId);
         }
+
+
 
         public static TodoModel ChangeTodoValue(TodoModel todoOrigin, TodoModel todoValue)
         {
@@ -190,35 +230,34 @@ namespace UltimateProject.Controller
             return todoOrigin;
         }
 
-        public static Dictionary<string, Action> createDictionaryFilter(string input, List<TodoModel> todos)
+        public static Dictionary<string, Action> createDictionaryFilter(string input)
         {
             return new Dictionary<string, Action>
             {
-                {"priority",() => TodoController.FilterCondition(Convertor.ChangeStringToPriority(input),todos) },
-                {"date",() => TodoController.FilterCondition(Convertor.ChangeStringToDate(input),todos) },
-                {"taskuser",() => TodoController.FilterCondition(Convertor.ConvStringToInt(input),todos) },
-                {"completed",() => TodoController.FilterCondition(Convertor.ConvStringToBool(input),todos) },
+                {"priority",() => TodoController.FilterCondition(Convertor.ChangeStringToPriority(input))},
+                {"date",() => TodoController.FilterCondition(Convertor.ChangeStringToDate(input))},
+                {"completed",() => TodoController.FilterCondition(Convertor.ConvStringToBool(input))},
+                {"getusertodo",() => TodoController.FilterCondition(Convertor.ConvStringToInt(input)) },
+                {"userhasnottask",() => TodoController.FilterUserHasNotTask(Convertor.ConvStringToInt(input)) },
+
             };
         }
 
 
         private static void _CreateTodo(string[] args)
         {
-            PriorityStatus status;
-            DateTime date;
-
-            status = Convertor.ChangeStringToPriority(args[1]);
-            date = Convertor.ChangeStringToDate(args[2]);
+            PriorityStatus status = Convertor.ChangeStringToPriority(args[1]);
+            DateTime date = Convertor.ChangeStringToDate(args[2]);
+            int userId = Convertor.ConvStringToInt(args[3]);
 
             if (args.Length == 4)
             {
                 Array.Resize(ref args, args.Length + 1);
             };
 
-            TodoModel model = new TodoModel(args[0], args[4], status, date);
+            TodoModel model = new TodoModel(args[0], args[4], status, date, userId);
             TodoModel todo = TodoModel.AddTodo(model);
 
-            UserTodosModel.AddUserTodoModel(todo.Id, Convertor.ConvStringToInt(args[3]));
             if (todo.Description == "") Menu.GetInstance().AddNotifTodo(todo.Id);
         }
 

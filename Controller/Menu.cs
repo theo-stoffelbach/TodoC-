@@ -25,6 +25,7 @@ namespace UltimateProject.Controller
                 { "updatetodo", () => TodoController.UpdateTodo(_arguments,_readOnly)},
                 { "deletetodo", () => TodoController.DeleteTodo(_arguments,_readOnly)},
                 { "completedtodo", () => TodoController.ActivateTodo(_arguments,_readOnly)},
+                { "changeuseridtodo", () => TodoController.ChangeTodoWithUserId(_arguments,_readOnly)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments,_readOnly)},
                 { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments,_readOnly)},
 
@@ -38,10 +39,7 @@ namespace UltimateProject.Controller
 
                 { "readfile", () => ReadFile.FileCommand()},
 
-                { "createuser", () => UserController.AddUser(_arguments, _readOnly)},
-
-                { "addusertodo", () => TodoUserController.AddUserTodo(_arguments, _readOnly)},
-                
+                { "createuser", () => UserController.AddUser(_arguments, _readOnly)},                
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.VisualBasic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,17 +25,18 @@ namespace UltimateProject.Model
 
         public DateTime? DueDate { get; set; }
         public bool IsCompleted { get; set; }
-        [NotMapped] public List<int> TodosId { get; set; }
+        public int ?UserId { get; set; }
 
         public TodoModel() { }
-        public TodoModel(string name, string desc, PriorityStatus priorityStatus, DateTime dueDate)
+        public TodoModel(string name, string desc, PriorityStatus priorityStatus, DateTime dueDate, int userId)
         {
             Name = name;
             Description = desc;
             Status = priorityStatus;
             CreationDate = DateTime.Now;
-            DueDate = dueDate;
+            DueDate = dueDate.Date;
             IsCompleted = false;
+            UserId = userId;
         }
         
         public static TodoModel AddTodo(TodoModel todoModel)
@@ -69,13 +71,13 @@ namespace UltimateProject.Model
             return todoModel;
         }
 
-        public static List<TodoModel> ReadTodosWithId(List<int> listUsersId)
+        public static TodoModel ReadTodosWithId(int TodoId)
         {
             try
             {
-                List<TodoModel> todoList = _db.TodoModels.Where(todo => listUsersId.Contains(todo.Id)).ToList();
+                TodoModel? todoList = _db.TodoModels.Find(TodoId);
 
-                if (todoList.Count == 0)
+                if (todoList == null)
                 {
                     Print.ErrorDisplay($"Il n'y a pas de todo avec le User (Id) mentionnés.");
                     return null;
@@ -109,6 +111,27 @@ namespace UltimateProject.Model
                 }
             }
             Print.ErrorDisplay($"not found Todo with Id : {id}");
+        }
+
+        public static void ChangeTodoWithUserId(int idTodo, int idNewUser)
+        {
+            TodoModel? tododb = _db.TodoModels.Find(idTodo);
+            if (tododb != null)
+            {
+                try
+                {
+                    tododb.UserId = idNewUser;
+                    _db.Update(tododb);
+                    _db.SaveChanges();
+                    Print.SuccessDisplay("Todo Update");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Print.ErrorDisplay(ex.ToString());
+                }
+            }
+            Print.ErrorDisplay($"not found Todo with Id : {idTodo}");
         }
 
         public static void AddDescTodo(int id,string description)
@@ -199,10 +222,8 @@ namespace UltimateProject.Model
 
             foreach (var todo in todos)
             {
-                TodoUserController.DeleteAllRefOfTodo(todo.Id);
                 _db.TodoModels.Remove(todo);
                 Print.SuccessDisplay("Delete All Todos successful");
-                UserTodosModel.DeleteAllRefOfTodo(todo.Id);
 
             }
             _db.SaveChanges();
@@ -229,6 +250,7 @@ namespace UltimateProject.Model
                 $"Description : {Description}, " +
                 $"Priority status : {Status}," +
                 $"Due Date : {DueDate}," +
+                $"User Id assign : {UserId}," +
                 $"Completed : {this.IsCompleted},";
         }
         public string ToString(List<UserModel> list)
@@ -237,7 +259,7 @@ namespace UltimateProject.Model
                 $"Name : {Name}, " +
                 $"Description : {Description}, " +
                 $"Priority status : {Status}," +
-                $"User : {String.Join(", ", list.Select(user => user.Name))} ({list.Count})," +  
+                $"User : {UserId} " +  
                 $"Due Date : {DueDate}," +
                 $"Completed : {this.IsCompleted},";
         }

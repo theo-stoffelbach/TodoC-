@@ -16,10 +16,10 @@ namespace UltimateProject.Controller
         public static List<Notif> TestNotifTime(List<Notif> notifs)
         {
             if (notifs.Count == 0) return notifs;
+
             List<string> notifsDeleted = new List<string>() { };
             for (int i = 0; i <= notifs.Count - 1; i++)
             {
-
                 if (notifs[i]._date <= DateTime.Now)
                 {
                     notifsDeleted.Add(notifs[i].ToString());
@@ -27,9 +27,17 @@ namespace UltimateProject.Controller
                 }
             }
 
-            if (notifs.Count > 0) Print.Display(notifs[0]._date.ToString());
+            _PrintDeleteNotif(notifsDeleted);
+            return notifs;
+        }
 
-            Console.WriteLine(notifsDeleted.Count + $" : {notifs.Count - 1}");
+        public override string ToString()
+        {
+            return $"la todo {_id} n'as toujours pas de description ! merci d'en mettre une avec la commande : 'addDescTodo {_id} Description' ";
+        }
+
+        private static void _PrintDeleteNotif(List<string> notifsDeleted)
+        {
             if (notifsDeleted.Count > 0)
             {
                 Print.Display("\n----- Notif -----");
@@ -40,18 +48,7 @@ namespace UltimateProject.Controller
                 }
                 Print.Display("-----------------\n");
             }
-
-
-            return notifs;
-        }
-
-
-
-        public override string ToString()
-        {
-            return $"la todo {_id} n'as toujours pas de description ! merci d'en mettre une avec la commande : 'addDescTodo {_id} Description' ";
-        }
-
+        }   
 
     }
 }
