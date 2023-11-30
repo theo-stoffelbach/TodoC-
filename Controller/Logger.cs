@@ -79,16 +79,20 @@ namespace TP_Theo_Stoffelbach.Controller
 
             try
             {
+
                 string cheminAbsolu = AppDomain.CurrentDomain.BaseDirectory + "../../../log";
                 string[] dirs = Directory.GetFiles(cheminAbsolu);
 
+                
 
                 foreach (string fichier in dirs)
                 {
                     File.Delete(fichier);
                 }
 
-                File.Create(path);  
+                FileStream fs = File.Create(path);
+                fs.Close();
+                
             }
             catch (Exception ex)
             {

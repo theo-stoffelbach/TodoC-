@@ -6,8 +6,8 @@ namespace UltimateProject.Model
 {
     public class UserModel
     {
- 
-        public static EFContext db = new EFContext();
+
+        private static EFContext _db = EFContext.Instance;
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
@@ -24,8 +24,8 @@ namespace UltimateProject.Model
             try
             {
                 UserModel model = new UserModel("theo");
-                db.Add(model);
-                db.SaveChanges();
+                _db.Add(model);
+                _db.SaveChanges();
                 Print.SuccessDisplay($"{model.Name} Created with id : {model.Id}");
             }
             catch (Exception err)
@@ -34,11 +34,12 @@ namespace UltimateProject.Model
             }
         }
 
-        public static List<UserModel>? GetAllUser()
+        public static List<int>? GetAllUser()
         {
             try
             {
-                List<UserModel> userProfiles = db.UserModels.ToList();
+                List<UserModel>? userProfiles = _db.UserModels.ToList();
+                List<int> listId = new List<int>() { };
 
                 if (userProfiles.Count == 0)
                 {
@@ -46,7 +47,12 @@ namespace UltimateProject.Model
                     return null;
                 }
 
-                return userProfiles;
+                foreach (var user in userProfiles)
+                {
+                    listId.Add(user.Id);
+                }
+
+                return listId;
             }
             catch (Exception err)
             {
@@ -59,10 +65,8 @@ namespace UltimateProject.Model
         {
             try
             {
-                TodoModel userProfiles = (TodoModel)db.TodoModels.Select(todo => todo.UserId == userId);
-                Print.Display($"test : {userProfiles}");
-                if (userProfiles == null) return false;
-                return true;
+                bool hasTodo = _db.TodoModels.Any(todo => todo.UserId == userId);
+                return hasTodo;
             }
             catch (Exception err)
             {
@@ -74,7 +78,7 @@ namespace UltimateProject.Model
         {
             try
             {
-                UserModel? userModel = db.UserModels.Find(id);
+                UserModel? userModel = _db.UserModels.Find(id);
                 if (userModel == null)
                 {
                     Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {id}");
@@ -90,25 +94,28 @@ namespace UltimateProject.Model
             return null;
         }
 
-        public static List<UserModel>? SearchUserWithId(List<int> listId)
+        public static UserModel? DeleteUser(int id)
         {
             try
             {
-                List<UserModel> userProfiles = db.UserModels.Where(user => listId.Contains(user.Id)).ToList();
-
-                if (userProfiles.Count == 0)
+                UserModel? userModel = _db.UserModels.Find(id);
+                if (userModel == null)
                 {
-                    Print.ErrorDisplay($"Il n'y a pas d'utilisateur avec les IDs mentionnés.");
+                    Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {id}");
                     return null;
                 }
 
-                return userProfiles;
+                _db.UserModels.Remove(userModel);
+                _db.SaveChanges();
+                Print.SuccessDisplay($"User {id} is delete");
+                return userModel;
             }
             catch (Exception err)
             {
                 Print.ErrorFatalDisplay($"with bdd to : {err}");
-                return null;
             }
+
+            return null;
         }
 
     }

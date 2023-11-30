@@ -1,4 +1,3 @@
 ﻿- Mettre verif type avec chaque fonc
 - clean code
 - Summary
-- Filtre

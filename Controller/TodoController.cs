@@ -78,7 +78,11 @@ namespace UltimateProject.Controller
 
             TodoModel model = new TodoModel(args[1], args[2], status, date, userId);
 
-            TodoModel.UpdateTodo(id, model);
+            TodoModel todoUpdated = TodoModel.UpdateTodo(id, model);
+            
+            if (todoUpdated == null) return;
+
+            Print.SuccessDisplay("Todo Updated with id : " + todoUpdated.Id);
         }
         public static void DeleteTodo(string[] args, bool readOnlyMode)
         {
@@ -92,12 +96,17 @@ namespace UltimateProject.Controller
             if (args.Length == 1 && !Verif.IsIntWithOutError(args[0]))
             {
                 PriorityStatus status = Convertor.ChangeStringToPriority(args[0]);
-                TodoModel.DeleteTodos(status);
+                List<TodoModel>? listTodos = TodoModel.DeleteTodos(status);
+                
+                if (listTodos == null) Print.ErrorDisplay("Not todos found");
+                
+                Print.SuccessDisplay("Delete All Todos successful");
                 return;
             }
 
             int id = int.Parse(args[0]);
             TodoModel.DeleteTodo(id);
+            Print.SuccessDisplay($"Delete Todo {id} successful");
         }
 
         public static void ActivateTodo(string[] args, bool readOnlyMode)
@@ -108,8 +117,18 @@ namespace UltimateProject.Controller
 
             int id = int.Parse(args[0]);
 
-            TodoModel.ActivateTodo(id);
+            TodoModel? todo = TodoModel.ActivateTodo(id);
+            
+            if(todo != null)
+            {
+                Print.ErrorDisplay($"Bug to Activate Todo ${todo}");
+                return;
+            };
+
+            Print.SuccessDisplay($"Todo {id} is activate");
+
         }
+
         public static void AddDescTodo(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 2)) return;
@@ -118,7 +137,15 @@ namespace UltimateProject.Controller
 
             int id = int.Parse(args[0]);
 
-            TodoModel.AddDescTodo(id, args[1]);
+            TodoModel? todo = TodoModel.AddDescTodo(id, args[1]);
+
+            if (todo == null)
+            {
+                Print.ErrorDisplay($"Bug with add description to todo {todo.Id}");
+                return;
+            }
+
+            Print.SuccessDisplay($"Todo {todo.Id} is add description");
         }
 
         public static void ChangeTodoWithUserId(string[] args, bool readOnlyMode)
@@ -131,118 +158,29 @@ namespace UltimateProject.Controller
             int idTodo = int.Parse(args[0]);
             int idNewUser = int.Parse(args[1]);
                 
-            TodoModel.ChangeTodoWithUserId(idTodo, idNewUser);
-        }
+            TodoModel? todo = TodoModel.ChangeUserIdToTodo(idTodo, idNewUser);
 
-        public static void FilterTodo(string[] args)
-        {
-            if (!Verif.HasArgsLength(args, 1,2)) return;
-
-            //List<TodoModel>? todos = TodoModel.ReadTodos();
-
-            Dictionary<string, Action> chooseAvaliable = createDictionaryFilter(args[1]);
-
-            if (chooseAvaliable.ContainsKey(args[0]))
+            if (todo == null)
             {
-                chooseAvaliable[args[0].ToLower()]();
+                Print.ErrorDisplay($"Il n'y a pas de todo avec le User (Id) mentionnés.");
                 return;
             }
-            Print.ErrorDisplay($"filter Not found with {args[0]}, please choose between : 'priority','completed' or 'date'");
-            string input = Console.ReadLine();
+
+            Print.SuccessDisplay($"Todo {idTodo} is change with User {idNewUser}");
         }
 
-        public static void FilterCondition(PriorityStatus priority)
+        public static TodoModel? ReadTodosWithId(int todoId)
         {
-            List<TodoModel> todos = TodoModel.ReadTodos();
-            foreach (var todo in todos)
+            TodoModel? todo = TodoModel.ReadTodosWithId(todoId);
+
+            if (todo == null)
             {
-                if (priority == todo.Status) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
-            }
-        }
-
-        public static void FilterCondition(DateTime dateTime)
-        {
-            List<TodoModel> todos = TodoModel.ReadTodos();
-            foreach (var todo in todos)
-            {
-                if (dateTime == todo.DueDate) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
-            }
-        }
-
-        public static void FilterCondition(bool isCompleted)
-        {
-            List<TodoModel> todos = TodoModel.ReadTodos();
-            foreach (var todo in todos)
-            {
-                if (isCompleted == todo.IsCompleted) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
-            }
-        }
-        public static void FilterCondition(int todoId)
-        {
-            TodoModel todo = ReadTodosWithId(todoId);
-            if (todo == null) return;
-
-            Print.Display(todo.ToString());
-        }
-
-        public static void FilterUserHasNotTask(int todoId)
-        {
-            List<UserModel>? users = UserModel.GetAllUser();
-            List<int>? listUserId = null;
-            if (users == null) return;
-            foreach (var user in users)
-            {
-                if (!UserModel.IsUserIdToTodos(user.Id)) listUserId.Add(user.Id);
+                Print.ErrorDisplay($"Il n'y a pas de todo avec le User (Id) mentionnés.");
+                return todo;
             }
 
-            if (listUserId == null)
-            {
-                Print.ErrorDisplay("All user has a task");
-                return;
-            };
-
-            foreach (var userId in listUserId)
-            {
-                Print.Display(userId.ToString());
-            }            
-
-            Print.Display(" --- ");
+            return todo;
         }
-
-        
-
-        public static TodoModel ReadTodosWithId(int todoId)
-        {
-            return TodoModel.ReadTodosWithId(todoId);
-        }
-
-
-
-        public static TodoModel ChangeTodoValue(TodoModel todoOrigin, TodoModel todoValue)
-        {
-            if (todoValue == null) return todoOrigin;
-
-            if (todoValue.Name != null) todoOrigin.Name = todoValue.Name;
-            if (todoValue.Description != null) todoOrigin.Description = todoValue.Description;
-            if (todoValue.Status != null) todoOrigin.Status = todoValue.Status;
-            if (todoValue.DueDate != null) todoOrigin.DueDate = todoValue.DueDate;
-
-            return todoOrigin;
-        }
-
-        public static Dictionary<string, Action> createDictionaryFilter(string input)
-        {
-            return new Dictionary<string, Action>
-            {
-                {"priority",() => TodoController.FilterCondition(Convertor.ChangeStringToPriority(input))},
-                {"date",() => TodoController.FilterCondition(Convertor.ChangeStringToDate(input))},
-                {"completed",() => TodoController.FilterCondition(Convertor.ConvStringToBool(input))},
-                {"getusertodo",() => TodoController.FilterCondition(Convertor.ConvStringToInt(input)) },
-                {"userhasnottask",() => TodoController.FilterUserHasNotTask(Convertor.ConvStringToInt(input)) },
-
-            };
-        }
-
 
         private static void _CreateTodo(string[] args)
         {
@@ -257,6 +195,10 @@ namespace UltimateProject.Controller
 
             TodoModel model = new TodoModel(args[0], args[4], status, date, userId);
             TodoModel todo = TodoModel.AddTodo(model);
+
+            if (todo != null) return;
+            Print.SuccessDisplay("Todo Created with id : " + todo.Id);
+
 
             if (todo.Description == "") Menu.GetInstance().AddNotifTodo(todo.Id);
         }

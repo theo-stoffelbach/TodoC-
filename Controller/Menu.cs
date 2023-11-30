@@ -15,6 +15,10 @@ namespace UltimateProject.Controller
 
         private static Menu _instance = null;
 
+
+        /// <summary>
+        /// The constructor of Menu
+        /// </summary>
         private Menu()
         {
             ChooseMenu = new Dictionary<string, Action>
@@ -28,8 +32,9 @@ namespace UltimateProject.Controller
                 { "changeuseridtodo", () => TodoController.ChangeTodoWithUserId(_arguments,_readOnly)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments,_readOnly)},
                 { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments,_readOnly)},
+                { "showusers", () => UserController.ReadUsers()},
 
-                { "filtertodo", () => TodoController.FilterTodo(_arguments)},
+                { "filtertodo", () => Filter.FilterTodo(_arguments)},
                 { "showtodos",  () => TodoController.ReadTodos()},
                 { "showstats", () => Stats.Show()},
                 { "zip", () => Logger.ZipAllLogs()},
@@ -39,10 +44,18 @@ namespace UltimateProject.Controller
 
                 { "readfile", () => ReadFile.FileCommand()},
 
-                { "createuser", () => UserController.AddUser(_arguments, _readOnly)},                
+                { "createuser", () => UserController.AddUser(_arguments, _readOnly)},
+                { "deleteuser", () => UserController.DeleteUser(_arguments, _readOnly)},
+
+
+
             };
         }
 
+        /// <summary>
+        /// Get the instance of Menu because it's a singleton
+        /// </summary>
+        /// <returns></returns>
         public static Menu GetInstance()
         {
             if (_instance == null)
@@ -52,11 +65,20 @@ namespace UltimateProject.Controller
             return _instance;
         }
 
+
+        /// <summary>
+        /// It's a method to add a new Notif in the list
+        /// </summary>
+        /// <param name="id"></param>
         public void AddNotifTodo(int id)
         {
             NotifList.Add(new Notif(id));
         }
 
+
+        /// <summary>
+        /// Use to execute the menu
+        /// </summary>
         public void UseMenu()
         {
             Notif.TestNotifTime(NotifList);
@@ -82,6 +104,13 @@ namespace UltimateProject.Controller
             Print.Display("");
             UseMenu();
         }
+
+
+        /// <summary>
+        /// Use to read a file and line by line execute the command
+        /// </summary>
+        /// <param name="Command"></param>
+        /// <returns></returns>
         public bool ReadFileLine(string Command)
         {
             string[] command = Command.Split(' ');
@@ -101,6 +130,10 @@ namespace UltimateProject.Controller
             }
         }
 
+
+        /// <summary>
+        /// MenuFilter is a method to execute a command without display
+        /// </summary>
         public void MenuFilter()
         {
             Print.PrintGetValue("Enter a command");
