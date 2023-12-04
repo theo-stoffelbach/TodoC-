@@ -8,9 +8,16 @@ namespace UltimateProject.Controller
         public static void AddUser(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
-            Print.Display("test");
 
-            UserModel.AddUser(args[0]);
+            UserModel? user = UserModel.AddUser(args[0]);
+
+            if (user != null)
+            {
+                Print.ErrorDisplay("User not created");
+            }
+
+            Print.SuccessDisplay($"{user.Name} Created with id : {user.Id}");
+
         }
 
         public static void ReadUsers()

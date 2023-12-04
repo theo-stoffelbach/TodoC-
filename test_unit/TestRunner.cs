@@ -11,7 +11,7 @@ namespace UltimateProject.test_unit
         public static void TestProtocol()
         {
             TestTodo.TestProtocol();
-            //TestUser.TestProtocol();
+            TestUser.TestProtocol();
         }
     }
 }

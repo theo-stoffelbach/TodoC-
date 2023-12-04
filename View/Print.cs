@@ -53,7 +53,7 @@ namespace UltimateProject.View
             ConsoleColor originalColor = Console.ForegroundColor;
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("Error");
+            Console.Write("Error");  
             Console.ForegroundColor = originalColor;
             Console.WriteLine($" : {message}");
         }

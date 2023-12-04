@@ -5,9 +5,9 @@ internal class Runner
 {
     private static void Main(string[] args)
     {
-        //TestTodo.TestProtocol();
+        TestRunner.TestProtocol();
 
-        Menu menu = Menu.GetInstance();
-        menu.UseMenu();
+        //Menu menu = Menu.GetInstance();
+        //menu.UseMenu();
     }
 }

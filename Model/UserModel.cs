@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using UltimateProject.View;
 
@@ -19,19 +20,32 @@ namespace UltimateProject.Model
             Name = name;
         }
 
-        public static void AddUser(string str)
+        public static UserModel? AddUser(string str)
         {
             try
             {
                 UserModel model = new UserModel("theo");
                 _db.Add(model);
                 _db.SaveChanges();
-                Print.SuccessDisplay($"{model.Name} Created with id : {model.Id}");
+                return model;
             }
             catch (Exception err)
             {
                 Print.ErrorFatalDisplay($"with bdd to : {err}");
+                return null;
             }
+        }
+
+        public static List<TodoModel>? GetUserIds(int idUser) {
+            List<TodoModel> todos = _db.TodoModels.Where(todo => todo.UserId == idUser).ToList();
+            
+            if (todos.Count == 0)
+            {
+                Print.ErrorDisplay($"Il n'y pas de todo avec l'Id : {idUser}");
+                return null;
+            }   
+
+            return todos;
         }
 
         public static List<int>? GetAllUser()
@@ -74,6 +88,7 @@ namespace UltimateProject.Model
                 return false;
             }
         }
+
         public static UserModel? SearchUserWithId(int id)
         {
             try
@@ -94,29 +109,48 @@ namespace UltimateProject.Model
             return null;
         }
 
-        public static UserModel? DeleteUser(int id)
+        public static UserModel? DeleteUser(int todoId)
         {
             try
             {
-                UserModel? userModel = _db.UserModels.Find(id);
+                UserModel? userModel = _db.UserModels.Find(todoId);
                 if (userModel == null)
                 {
-                    Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {id}");
+                    Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {todoId}");
                     return null;
                 }
 
+                if (_hasDeleteTodosWithUserId(todoId)) return null;
+
                 _db.UserModels.Remove(userModel);
                 _db.SaveChanges();
-                Print.SuccessDisplay($"User {id} is delete");
+                Print.SuccessDisplay($"User {todoId} is delete");
                 return userModel;
             }
             catch (Exception err)
             {
                 Print.ErrorFatalDisplay($"with bdd to : {err}");
             }
-
             return null;
         }
 
+
+        private static bool _hasDeleteTodosWithUserId(int todoId)
+        {
+            List<TodoModel>? todos = TodoModel.GetTodosWithUserId(todoId);
+
+            if (todos == null)
+            {
+                Print.ErrorDisplay($"Il n'y pas de todo avec l'Id : {todoId}");
+                return false;
+            }
+
+            foreach (var todo in todos)
+            {
+                todo.UserId = null;
+            }
+
+            return true;
+        }
     }
 }

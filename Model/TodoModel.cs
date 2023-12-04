@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -128,6 +129,23 @@ namespace UltimateProject.Model
                 }
             }
             return null;
+        }
+
+        public static List<TodoModel>? GetTodosWithUserId(int userId)
+        {
+            try
+            {
+                var listTodos = _db.TodoModels.Where(todo => todo.UserId == userId).ToList();
+
+                if (listTodos == null) return null;
+                
+                return listTodos;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
 
         public static TodoModel? AddDescTodo(int id,string description)

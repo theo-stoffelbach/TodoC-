@@ -136,10 +136,10 @@ namespace UltimateProject.test_unit
         private static bool _TestTodoChangeUser()
         {
             try { 
-                TodoModel? todo = TodoModel.ChangeUserIdToTodo(_idTodoCreadted, 2);
+                TodoModel? todo = TodoModel.ChangeUserIdToTodo(_idTodoCreadted, 1);
 
                 if (todo == null) throw new Exception("To Change the UserId to the todo");
-                if (todo.UserId != 2) throw new Exception("To Change the UserId to the todo Because is not the good UserId");
+                if (todo.UserId != 1) throw new Exception("To Change the UserId to the todo Because is not the good UserId");
 
                 Print.SuccessDisplay($"To Change the UserId ( {todo.UserId} ) to the todo ( {todo.Id} )");
                 return true;
