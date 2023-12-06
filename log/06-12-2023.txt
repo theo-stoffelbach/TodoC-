@@ -1,0 +1,27 @@
+06/12/2023 21:16:42 | showstats 
+06/12/2023 21:17:27 | createtodo title hight 28.01.2023
+06/12/2023 21:18:00 | createtodo title hight 28.01.2023 1
+06/12/2023 21:18:12 | showstats 
+06/12/2023 21:36:39 | showstats 
+06/12/2023 21:36:45 | showtodos 
+06/12/2023 21:36:46 | showstats 
+06/12/2023 21:38:02 | showstats 
+06/12/2023 21:38:09 | help 
+06/12/2023 21:38:13 | completedtodo 2
+06/12/2023 21:38:21 | completedtodo 10
+06/12/2023 21:38:23 | showtodos 
+06/12/2023 21:38:29 | completedtodo 2
+06/12/2023 21:38:48 | showstats 
+06/12/2023 21:38:55 | showtodos 2
+06/12/2023 21:39:05 | completedtodo 2
+06/12/2023 21:39:08 | showtodos 
+06/12/2023 21:39:16 | showstats 
+06/12/2023 21:42:50 | showstats 
+06/12/2023 21:42:51 | showstats 
+06/12/2023 21:42:52 | showstats 
+06/12/2023 21:43:23 | showstats 
+06/12/2023 21:43:24 | showstats 
+06/12/2023 21:43:24 | showstats 
+06/12/2023 21:43:25 | showstats 
+06/12/2023 21:43:25 | showstats 
+06/12/2023 21:43:26 | showstats 

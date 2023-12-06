@@ -1,23 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 using UltimateProject.View;
 
 namespace UltimateProject.Controller
 {
     public class ReadFile
     {
+        /// <summary>
+        /// To read a file and execute all commands
+        /// </summary>
         public static void FileCommand()
         {
 
-            string[] files = _getAllCommandFile();
+            string[] files = _GetAllCommandFile();
 
             if (Verif.IsEmpty(files)) return;
 
-            int choice = _getFileChoose(files);
+            int choice = _GetFileChoose(files);
 
+
+            _ReadAndExecuteCommand(files,choice);
+
+            Print.SuccessDisplay("END ReadFile");
+        }
+
+        /// <summary>
+        /// Read a file and execute all commands
+        /// </summary>
+        /// <param name="files"> all lines of files</param>
+        /// <param name="choice"> int for the choise </param>
+        private static void _ReadAndExecuteCommand(string[] files, int choice)
+        {
             using (StreamReader sr = new StreamReader(files[choice - 1]))
             {
                 while (!sr.EndOfStream)
@@ -28,12 +40,13 @@ namespace UltimateProject.Controller
                     menu.ReadFileLine(ligne);
                 }
             }
-
-
-            Print.SuccessDisplay("END ReadFile");
         }
-
-        private static string[] _getAllCommandFile()
+        
+        /// <summary>
+        /// To get all files in the folder commandFile
+        /// </summary>
+        /// <returns></returns>
+        private static string[] _GetAllCommandFile()
         {
             string cheminDossier = @"../../../commandFile/";
             string extensionRecherchee = ".txt";
@@ -41,10 +54,16 @@ namespace UltimateProject.Controller
                                          .Where(fichier => Path.GetExtension(fichier) == extensionRecherchee)
                                          .ToArray();
         }
-        private static int _getFileChoose(string[] files)
+
+        /// <summary>
+        /// Get the file choose by the user
+        /// </summary>
+        /// <param name="files"> All choises </param>
+        /// <returns></returns>
+        private static int _GetFileChoose(string[] files)
         {
-            Print.Display("\nMerci de choisir entre : ");
-            Print.Display("0 : sortir ");
+            Print.Display("\nThanks to choose : ");
+            Print.Display("0 : exit ");
             int i = 1;
             foreach (string file in files)
             {
@@ -54,22 +73,26 @@ namespace UltimateProject.Controller
                 i++;
             }
 
-            Print.PrintGetValue("\nVotre choix (entré un nombre)");
-            return _getChooseUser(files);
+            Print.PrintGetValue("\nYour choice (enter a number)");
+            return _GetChooseUser(files);
         }
-        private static int _getChooseUser(string[] files)
+
+        /// <summary>
+        /// Get the choice of the user
+        /// </summary>
+        /// <param name="files"> select with all choices </param>
+        /// <returns></returns>
+        private static int _GetChooseUser(string[] files)
         {
             int choice = Convertor.ConvStringToIntCommand(Console.ReadLine());
             if (choice == 0) Menu.GetInstance().UseMenu();
             if (choice > files.Count() || choice < 0)
             {
-                Print.ErrorDisplay($"Votre nombre n'est pas entre 1 et {files.Count()}");
+                Print.ErrorDisplay($"Your number is not between 1 and {files.Count()}");
                 FileCommand();
                 return 0;
             }
             return choice;
         }
-
-
     }
 }

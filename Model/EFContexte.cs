@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UltimateProject;
 
 namespace UltimateProject.Model
 {

@@ -34,6 +34,23 @@ namespace UltimateProject.Controller
             Print.Display("");
         }
 
+        public static void UpdateTodo(string[] args, bool readOnlyMode)
+        {
+            if (!Verif.HasArgsLength(args, 2)) return;
+            if (readOnlyMode && Verif.IsInt(args[0])) return;
+
+            int userId = Convertor.ConvStringToInt(args[0]);
+
+            UserModel? user = UserModel.UpdateUser(userId, args[1]);
+    
+            if (user == null)
+            {
+                Print.Display("User not updated");
+                return;
+            };
+            Print.SuccessDisplay("Todo Updated with id : " + user.Id);
+        }
+
         public static void DeleteUser(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
@@ -41,7 +58,12 @@ namespace UltimateProject.Controller
 
             int id = Convertor.ConvStringToInt(args[0]);
 
-            UserModel.DeleteUser(id);
+            UserModel? user = UserModel.DeleteUser(id);
+
+            if (user == null) Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {args[0]}");
+
+            Print.SuccessDisplay($"User {args[0]} is delete");
+
         }
 
 

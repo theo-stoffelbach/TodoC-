@@ -1,34 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using UltimateProject.Model;
+using UltimateProject.View;
 
 namespace UltimateProject.Controller
 {
     public class CSVToDb
     {
-
+        /// <summary>
+        /// To import csv file to db
+        /// </summary>
+        /// <param name="args"> a string to the path</param>
         public static void ImportFromCsv(string[] args)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
 
             string csvFilePath = args[0];
+            Print.Display("../../../csv/" + csvFilePath);
             string[] lines = File.ReadAllLines("../../../csv/" + csvFilePath);
+
 
             foreach (var line in lines.Skip(1))
             {
-                var todo = ParseCsvValueToTodo(line);
+                var todo = _ParseCsvValueToTodo(line);
 
                 TodoModel.AddTodo(todo);
             }
         }
 
+        /// <summary>
+        /// To export csv file to db
+        /// </summary>
         public static void ExportToCsv()
         {
-            List<TodoModel> todoModels = TodoModel.ReadTodos();
+            List<TodoModel>? todoModels = TodoModel.ReadTodos();
             string csvFilePath = AppDomain.CurrentDomain.BaseDirectory + "../../../csv/db.csv";
+
+            if (todoModels == null)
+            {
+                Print.ErrorDisplay("To export csv Because DB is null");
+                return;
+            };
 
             using (StreamWriter writer = new StreamWriter(csvFilePath, false, Encoding.UTF8))
             {
@@ -40,8 +51,12 @@ namespace UltimateProject.Controller
             }
         }
 
-
-        private static TodoModel ParseCsvValueToTodo(string line)
+        /// <summary>
+        /// To parse a line of csv to a TodoModel and create a todo
+        /// </summary>
+        /// <param name="line"> to parse and execute to create a todo </param>
+        /// <returns></returns>
+        private static TodoModel _ParseCsvValueToTodo(string line)
         {
             string[] values = line.Split(';');
             return new TodoModel

@@ -20,11 +20,11 @@ namespace UltimateProject.Model
             Name = name;
         }
 
-        public static UserModel? AddUser(string str)
+        public static UserModel? AddUser(string user)
         {
             try
             {
-                UserModel model = new UserModel("theo");
+                UserModel model = new UserModel(user);
                 _db.Add(model);
                 _db.SaveChanges();
                 return model;
@@ -109,6 +109,26 @@ namespace UltimateProject.Model
             return null;
         }
 
+        public static UserModel? UpdateUser(int id,string name)
+        {
+            UserModel? userdb = _db.UserModels.Find(id);
+            if (userdb != null)
+            {
+                try
+                {
+                    userdb.Name = name;
+                    _db.Update(userdb);
+                    _db.SaveChanges();
+                    return userdb;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
+
         public static UserModel? DeleteUser(int todoId)
         {
             try
@@ -116,15 +136,13 @@ namespace UltimateProject.Model
                 UserModel? userModel = _db.UserModels.Find(todoId);
                 if (userModel == null)
                 {
-                    Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {todoId}");
                     return null;
                 }
 
-                if (_hasDeleteTodosWithUserId(todoId)) return null;
+                if (!_hasDeleteTodosWithUserId(todoId)) return null;
 
                 _db.UserModels.Remove(userModel);
                 _db.SaveChanges();
-                Print.SuccessDisplay($"User {todoId} is delete");
                 return userModel;
             }
             catch (Exception err)

@@ -1,6 +1,7 @@
 ﻿using TP_Theo_Stoffelbach.Controller;
 using UltimateProject.Model;
 using UltimateProject.View;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace UltimateProject.Controller
 {
@@ -45,10 +46,8 @@ namespace UltimateProject.Controller
                 { "readfile", () => ReadFile.FileCommand()},
 
                 { "createuser", () => UserController.AddUser(_arguments, _readOnly)},
+                { "updateuser", () => UserController.UpdateTodo(_arguments, _readOnly)},
                 { "deleteuser", () => UserController.DeleteUser(_arguments, _readOnly)},
-
-
-
             };
         }
 
@@ -65,7 +64,6 @@ namespace UltimateProject.Controller
             return _instance;
         }
 
-
         /// <summary>
         /// It's a method to add a new Notif in the list
         /// </summary>
@@ -74,7 +72,6 @@ namespace UltimateProject.Controller
         {
             NotifList.Add(new Notif(id));
         }
-
 
         /// <summary>
         /// Use to execute the menu
@@ -91,15 +88,7 @@ namespace UltimateProject.Controller
             _arguments = command.Skip(1).ToArray();
             _readOnly = false;
 
-            if (ChooseMenu.ContainsKey(_chooseUser))
-            {
-                ChooseMenu[_chooseUser.ToLower()](); // Here to execute command
-                Logger.AddNewLogAction(DateTime.Now + " | " + _chooseUser + " " + string.Join(" ", _arguments));
-            }
-            else
-            {
-                Print.ErrorDisplay("Command not found, write : 'help' if you want");
-            }
+            _selectCommand(inputUser);
 
             Print.Display("");
             UseMenu();
@@ -148,7 +137,17 @@ namespace UltimateProject.Controller
             UseMenu();
         }
 
-        
+        private void _selectCommand(string command)
+        {
+            if (ChooseMenu.ContainsKey(_chooseUser))
+            {
+                ChooseMenu[_chooseUser.ToLower()](); // Here to execute command
+            }
+            else
+            {
+                Print.ErrorDisplay($"Error to Execute this : {Command}");
+            }
+        }
 
         private void _ChooseMenu()
         {

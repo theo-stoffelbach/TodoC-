@@ -10,8 +10,12 @@ namespace UltimateProject.Controller
 {
     public class Filter
     {
-        private static string _argumentForFilter;
+        private static string? _argumentForFilter;
 
+        /// <summary>
+        /// to choose the good filter and execute him
+        /// </summary>
+        /// <param name="args"> arguments of user </param>
         public static void FilterTodo(string[] args)
         {
             if (!Verif.HasArgsLength(args, 1, 2)) return;
@@ -32,51 +36,114 @@ namespace UltimateProject.Controller
             string input = Console.ReadLine();
         }
 
+
+        /// <summary>
+        /// For filter with priority of todo
+        /// </summary>
+        /// <param name="priority"> the priority to filter </param>
         public static void FilterCondition(PriorityStatus priority)
         {
-            List<TodoModel> todos = TodoModel.ReadTodos();
+            List<TodoModel>? todos = TodoModel.ReadTodos();
+
+            if (todos == null)
+            {
+                Print.ErrorDisplay("No todo found");
+                return;
+            }
+
             foreach (var todo in todos)
             {
                 if (priority == todo.Status) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
 
+        /// <summary>
+        /// For filter with date
+        /// </summary>
+        /// <param name="dateTime"> to filter with date</param>
         public static void FilterCondition(DateTime dateTime)
         {
-            List<TodoModel> todos = TodoModel.ReadTodos();
+            List<TodoModel>? todos = TodoModel.ReadTodos();
+
+            if (todos == null)
+            {
+                Print.ErrorDisplay("No todo found");
+                return;
+            }
+
             foreach (var todo in todos)
             {
                 if (dateTime == todo.DueDate) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
 
+        /// <summary>
+        /// For filter with todo completed
+        /// </summary>
+        /// <param name="isCompleted"> to know if is completed or not</param>
         public static void FilterCondition(bool isCompleted)
         {
-            List<TodoModel> todos = TodoModel.ReadTodos();
+            List<TodoModel>? todos = TodoModel.ReadTodos();
+
+            if (todos == null)
+            {
+                Print.ErrorDisplay("No todo found");
+                return;
+            }
+
             foreach (var todo in todos)
             {
                 if (isCompleted == todo.IsCompleted) Print.Display($"Id : {todo.Id}, Name : {todo.Name}, {(todo.Description != "" ? " " : $"Description : {todo.Description}, ")}DueDate : {todo.DueDate}");
             }
         }
+
+        /// <summary>
+        /// Filter with user id of todo
+        /// </summary>
+        /// <param name="todoId"> int of a todo </param>
         public static void FilterCondition(int todoId)
         {
-            TodoModel todo = TodoController.ReadTodosWithId(todoId);
-            if (todo == null) return;
+            TodoModel? todo = TodoController.ReadTodosWithId(todoId);
+
+            if (todo == null)
+            {
+                Print.ErrorDisplay($"The todo {todoId} not found");
+                return;
+            }
 
             Print.Display(todo.ToString());
         }
 
+
+        /// <summary>
+        /// To filter user has not task
+        /// </summary>
         public static void FilterUserHasNotTask() // int todoId
         {
             List<int>? listUsersId = UserModel.GetAllUser();
             List<int> listUserIdHasNotTask = new List<int>();
-            if (listUsersId == null) return;
 
+            if (listUsersId == null)
+            {
+                Print.ErrorDisplay("No user found");
+                return;
+            };
 
             foreach (var userId in listUsersId)
             {
                 if (!UserModel.IsUserIdToTodos(userId)) listUserIdHasNotTask.Add(userId);
             }
+
+            _PrintTodosHasNotTask(listUserIdHasNotTask);
+        }
+
+
+        /// <summary>
+        /// To print user has not task
+        /// </summary>
+        /// <param name="listUserIdHasNotTask"> all todos with not userId </param>
+        private static void _PrintTodosHasNotTask(List<int> listUserIdHasNotTask)
+        {
 
             if (listUserIdHasNotTask == null)
             {
@@ -94,6 +161,9 @@ namespace UltimateProject.Controller
             Print.Display(" ------------------------- ");
         }
 
+        /// <summary>
+        /// To create a dictionary with all filter
+        /// </summary>
         private static Dictionary<string, Action> _CreateDictionaryFilter()
         {
             return new Dictionary<string, Action>

@@ -37,8 +37,6 @@ namespace UltimateProject.Controller
             else return false;
         }
 
-
-
         public static bool IsEmpty(string[] str)
         {
             if (str.Length == 0)
@@ -55,6 +53,7 @@ namespace UltimateProject.Controller
             Print.ErrorDisplay("Command Error is not a date");
             return false;
         }
+
         public static bool IsInt(string status)
         {
             if (int.TryParse(status, out _)) return true;
@@ -74,7 +73,5 @@ namespace UltimateProject.Controller
             Print.ErrorDisplay("Command Error is not a priority");
             return false;
         }
-
-
     }
 }

@@ -18,6 +18,7 @@ namespace UltimateProject.test_unit
             Print.Display("");
 
             if (!_testUserCreated()) return;
+            if (!_testUserUpdate()) return;
             if (!_testUserDelete()) return;
         }
 
@@ -26,10 +27,10 @@ namespace UltimateProject.test_unit
         {
             try
             {
-                UserModel? userCreated = UserModel.AddUser("test_Unit");
+                UserModel? userCreated = UserModel.AddUser("testUnit");
 
                 if (userCreated == null) throw new Exception("To Create a user Because is Null");
-                if (userCreated.Name != "test_unit") throw new Exception($"To Create a user Because is not the good name ( is {userCreated.Name})");
+                if (userCreated.Name != "testUnit") throw new Exception($"To Create a user Because is not the good name ( is {userCreated.Name})");
 
                 Print.SuccessDisplay("To Create a user");
                 _idUserCreadted = userCreated.Id;
@@ -46,11 +47,12 @@ namespace UltimateProject.test_unit
         {
             try
             {
-                UserModel? user = UserModel.UpdateUser(_idUserCreadted, "test_unit2");
+                UserModel? user = UserModel.UpdateUser(_idUserCreadted, "testUnit2");
 
                 if (user == null) throw new Exception("To Update a user Because is Null");
-                if (user.Name == "test_unit2") throw new Exception($"To Update a user Because is not the good name ( is {user.Name})");
+                if (user.Name != "testUnit2") throw new Exception($"To Update a user Because is not the good name ( is {user.Name})");
 
+                Print.SuccessDisplay($"User {_idUserCreadted} is update");
                 return true;
             }catch(Exception err)
             {
@@ -66,7 +68,8 @@ namespace UltimateProject.test_unit
                 UserModel? user = UserModel.DeleteUser(_idUserCreadted);
 
                 if (user == null) throw new Exception("To Delete a user Because is Null");
-
+                
+                Print.SuccessDisplay($"User {_idUserCreadted} is delete");
                 return true;
             }catch(Exception err)
             {
