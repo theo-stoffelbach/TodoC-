@@ -1,4 +1,0 @@
-﻿- Mettre verif type avec chaque fonc
-- clean code
-- Summary
-- Verif si il y a le fichier !

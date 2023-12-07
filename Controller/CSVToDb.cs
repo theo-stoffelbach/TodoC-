@@ -15,9 +15,9 @@ namespace UltimateProject.Controller
             if (!Verif.HasArgsLength(args, 1)) return;
 
             string csvFilePath = args[0];
-            Print.Display("../../../csv/" + csvFilePath);
-            string[] lines = File.ReadAllLines("../../../csv/" + csvFilePath);
+            if (Verif.IsExistingFile("../../../csv/" + csvFilePath) == false) return;
 
+            string[] lines = File.ReadAllLines("../../../csv/" + csvFilePath);
 
             foreach (var line in lines.Skip(1))
             {

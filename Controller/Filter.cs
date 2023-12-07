@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UltimateProject.Model;
+﻿using UltimateProject.Model;
 using UltimateProject.View;
 
 namespace UltimateProject.Controller
@@ -20,7 +15,7 @@ namespace UltimateProject.Controller
         {
             if (!Verif.HasArgsLength(args, 1, 2)) return;
 
-            if (!Verif.VerifArgsWithoutPrint(args, 2))
+            if (Verif.VerifArgsWithoutPrint(args, 2))
             {
                 _argumentForFilter = args[1];
             }
@@ -103,7 +98,7 @@ namespace UltimateProject.Controller
         /// <param name="todoId"> int of a todo </param>
         public static void FilterCondition(int todoId)
         {
-            TodoModel? todo = TodoController.ReadTodosWithId(todoId);
+            TodoModel? todo = TodoModel.ReadTodo(todoId);
 
             if (todo == null)
             {
@@ -120,7 +115,7 @@ namespace UltimateProject.Controller
         /// </summary>
         public static void FilterUserHasNotTask() // int todoId
         {
-            List<int>? listUsersId = UserModel.GetAllUser();
+            List<int>? listUsersId = UserModel.GetAllUserId();
             List<int> listUserIdHasNotTask = new List<int>();
 
             if (listUsersId == null)

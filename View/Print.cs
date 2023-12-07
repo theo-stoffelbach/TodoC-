@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UltimateProject.View
+﻿namespace UltimateProject.View
 {
     public class Print
     {
@@ -85,25 +79,26 @@ namespace UltimateProject.View
             + "\n{ XXXXXX } : obligator argument and"
             + "\n[ XXXXXX ] : optionnal argument"
             + "\n\nExit : To exit a program"
+            + "\n\n ---------- User ----------\n"
+            + "\ncreateuser : Use to create a New User | createuser {name}"
+            + "\nupdateuser : Use to update a User | updateuser {UserId} {name}"
+            + "\ndeleteuser : Use to delete a User | deleteuser {UserId}"
+            + "\nshowusers : Use to show a Users | showusers"
+            + "\nshowstats: Use to complete Or not complete | showstats"
             + "\n\n ---------- Todo ----------\n"
             + "\ncreatetodo : Use to create a todo | Createtodo {Title} {Priority} {DateDue} {UserId} [Description]"
             + "\nupdatetodo: Use to update a todo | Update {Id} {Title} {Description} {Priority} {DateDue} "
-            + "\ndeletetodo : Use to delete a todo | Deletetodo {TodoId} OR Deletetodo {Priority} OR Deletetodo all"
+            + "\ndeletetodo : Use to delete a todo | Deletetodo {TodoId} OR Deletetodo {Priority} "
             + "\ncompletedtodo : Use to complete Or not complete | completedtodo {TodoId}"
             + "\nchangeuseridtodo : Use to change the UserId | changeuseridtodo {TodoId} {UserId}"
             + "\nadddesctodo : Use to add a description on a todo | adddesctodo {TodoId} {Description}"
-            + "\n\n ---------- User ----------\n"
-            + "\ncreateuser : Use to create a New User | createuser {name}"
-            + "\n\n ---------- Show ----------\n"
             + "\nshowdetailtodos : Use to show a more detail on a todo | showdetailtodos {TodoId}"
-            + "\nfiltertodo: Use to update a todo | Update {Id} {Title} {Description} {Priority} {DateDue} "
-            + "\nshowstats: Use to complete Or not complete | completedtodo {TodoId}"
             + "\nshowtodos : Use to show a todos | showtodos"
-            + "\nshowtodos : Use to delete a todo | Deletetodo {TodoId} OR Deletetodo {Priority} OR Deletetodo all"
+            + "\nfiltertodo: Use to update a todo | filtertodo {PriorityStatus} {Low/Medium/high}OR {Date} {date} OR {Completed} {bool} OR {UserId} {UserId} OR {userhasnottask} {UserId}"
             + "\n\n ---------- Other ----------\n"
-            + "\nimportcsv : Use to import a csv file | importcsv {Path}"
+            + "\nimportcsv : Use to import a csv file | importcsv {NameOfDB}"
             + "\nexportcsv : Use to export a csv file | exportcsv"
-            + "\nreadfile : Use to read a file | readfile {Path}"
+            + "\nreadfile : Use to read a file | readfile"
             + "\nzip : Use to add a description on a todo | adddesctodo {TodoId} {Description}"
 
             );

@@ -75,7 +75,7 @@ namespace UltimateProject.test_unit
         {
             try
             {
-                TodoModel? newTodo = TodoModel.ReadTodosWithId(_idTodoCreadted);
+                TodoModel? newTodo = TodoModel.ReadTodo(_idTodoCreadted);
 
                 if (newTodo == null) throw new Exception("To Read with id a todo Because is Null");
                 if (newTodo.Name != "test_Unit 2") throw new Exception("To Read with id a todo Because is Not the good Title");
@@ -182,7 +182,7 @@ namespace UltimateProject.test_unit
             {
                 TodoModel.DeleteTodo(_idTodoCreadted);
 
-                if (TodoModel.ReadTodosWithId(_idTodoCreadted) != null) throw new Exception("To Delete a todo");
+                if (TodoModel.ReadTodo(_idTodoCreadted) != null) throw new Exception("To Delete a todo");
                 
                 Print.SuccessDisplay($"To Delete a todo with id : {_idTodoCreadted}");
                 return true;

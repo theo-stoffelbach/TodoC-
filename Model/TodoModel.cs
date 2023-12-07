@@ -1,12 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using UltimateProject.Controller;
+﻿using System.ComponentModel.DataAnnotations;
 using UltimateProject.View;
 
 namespace UltimateProject.Model
@@ -15,19 +7,16 @@ namespace UltimateProject.Model
     {
         [Key]
         public int Id { get; set; }
-
-        private static EFContext _db = EFContext.Instance;
         public string Name { get; set; }
-
         public string? Description { get; set; }
-
         public PriorityStatus? Status { get; set; }
-
         public DateTime CreationDate { get; set; }
-
         public DateTime? DueDate { get; set; }
         public bool IsCompleted { get; set; }
         public int ?UserId { get; set; }
+
+
+        private static EFContext _db = EFContext.Instance;
 
         public TodoModel() { }
         public TodoModel(string name, string desc, PriorityStatus priorityStatus, DateTime dueDate, int userId)
@@ -41,6 +30,11 @@ namespace UltimateProject.Model
             UserId = userId;
         }
         
+        /// <summary>
+        /// Add Todo to BDD
+        /// </summary>
+        /// <param name="todoModel"> is TodoModel </param>
+        /// <returns></returns>
         public static TodoModel AddTodo(TodoModel todoModel)
         {
             try
@@ -56,39 +50,36 @@ namespace UltimateProject.Model
             }
         }
 
+        /// <summary>
+        /// To read all todos
+        /// </summary>
+        /// <returns> all todos</returns>
         public static List<TodoModel>? ReadTodos()
         {
             return _db.TodoModels.ToList();
         }
 
-        public static TodoModel ReadTodo(int id)
+        /// <summary>
+        /// Read 1 todo with id
+        /// </summary>
+        /// <param name="id"> the id of todo </param>
+        /// <returns></returns>
+        public static TodoModel? ReadTodo(int id)
         {
             TodoModel? todoModel = _db.TodoModels.Find(id);
             if (todoModel == null)
             {
-                Print.ErrorDisplay($"Il n'y pas de todo avec l'Id : {id}");
+                Print.ErrorDisplay($"There's no todo with Id: {id}");
                 return null;
             }
             return todoModel;
         }
 
-        public static TodoModel? ReadTodosWithId(int TodoId)
-        {
-            try
-            {
-                TodoModel? todoList = _db.TodoModels.Find(TodoId);
-
-                if (todoList == null)return null;
-
-                return todoList;
-            }
-            catch (Exception err)
-            {
-                Print.ErrorFatalDisplay($"with bdd to : {err}");
-                return null;
-            }
-        }
-
+        /// <summary>
+        /// To activate a todo
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static TodoModel? ActivateTodo(int id)
         {
             TodoModel? tododb = _db.TodoModels.Find(id);
@@ -110,6 +101,12 @@ namespace UltimateProject.Model
             return null;
         }
 
+        /// <summary>
+        /// To change the user of a todo
+        /// </summary>
+        /// <param name="idTodo"> int the id of todo </param>
+        /// <param name="idNewUser"> int of the new todo </param>
+        /// <returns></returns>
         public static TodoModel? ChangeUserIdToTodo(int idTodo, int idNewUser)
         {
             TodoModel? tododb = _db.TodoModels.Find(idTodo);
@@ -131,6 +128,11 @@ namespace UltimateProject.Model
             return null;
         }
 
+        /// <summary>
+        /// To get all todos with user id
+        /// </summary>
+        /// <param name="userId"> the id of user</param>
+        /// <returns></returns>
         public static List<TodoModel>? GetTodosWithUserId(int userId)
         {
             try
@@ -148,6 +150,12 @@ namespace UltimateProject.Model
 
         }
 
+        /// <summary>
+        /// To get a description to a todo or change it
+        /// </summary>
+        /// <param name="id"> the todo of id </param>
+        /// <param name="description"> the new description of todo</param>
+        /// <returns></returns>
         public static TodoModel? AddDescTodo(int id,string description)
         {
             TodoModel? tododb = _db.TodoModels.Find(id);
@@ -168,6 +176,12 @@ namespace UltimateProject.Model
             return null;
         }
         
+        /// <summary>
+        /// Update a todo
+        /// </summary>
+        /// <param name="id"> int the user id</param>
+        /// <param name="todoModel"> the change the old todo </param>
+        /// <returns></returns>
         public static TodoModel? UpdateTodo(int id, TodoModel todoModel)
         {
             TodoModel? tododb = _db.TodoModels.Find(id);
@@ -193,6 +207,10 @@ namespace UltimateProject.Model
             
         }
 
+        /// <summary>
+        /// To delete a todo
+        /// </summary>
+        /// <param name="id"> the user id</param>
         public static void DeleteTodo(int id)
         {
             TodoModel? todo = _db.TodoModels.Find(id);
@@ -206,6 +224,7 @@ namespace UltimateProject.Model
             _db.SaveChanges();
         }
 
+        /* The method for Version more than 1.0.0 ( in a future)
         public static void DeleteAllTodos()
         {
             List<TodoModel> todos = _db.TodoModels.ToList();
@@ -222,8 +241,13 @@ namespace UltimateProject.Model
                 Print.SuccessDisplay("Delete All Todos successful");
             }
             _db.SaveChanges();
-        }
+        }*/
 
+        /// <summary>
+        /// To delete all todos with status
+        /// </summary>
+        /// <param name="status"> a status to delete a certain</param>
+        /// <returns></returns>
         public static List<TodoModel>? DeleteTodos(PriorityStatus status)
         {
             List<TodoModel> todos = _db.TodoModels.Where(todo => todo.Status == status).ToList();
@@ -239,20 +263,12 @@ namespace UltimateProject.Model
             return todos;
         }
 
-
-
-        public string ShowDetailTodo(string[] listName)
-        {
-            string listNameStr = string.Join(" ", listName);
-            return $"Id : {this.Id}, " +
-                   $"Name : {this.Name}, " +
-                   $"Description : {this.Description}, " +
-                   $"Priority status : {this.Status}," +
-                   $"Due Date : {this.DueDate}," +
-                   $"Completed : {this.IsCompleted}," +
-                   $"Users : {listNameStr}";
-        }
-
+        /// <summary>
+        /// To change the value of todo
+        /// </summary>
+        /// <param name="todoOrigin"> The reference of the todo </param>
+        /// <param name="todoValue"> the new value of todo </param>
+        /// <returns></returns>
         private static TodoModel _ChangeTodoValue(TodoModel todoOrigin, TodoModel todoValue)
         {
             if (todoValue == null) return todoOrigin;
@@ -265,7 +281,10 @@ namespace UltimateProject.Model
             return todoOrigin;
         }
 
-
+        /// <summary>
+        /// To string a todo
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return $"Id : {Id}, " +
@@ -276,13 +295,19 @@ namespace UltimateProject.Model
                 $"User Id assign : {UserId}," +
                 $"Completed : {this.IsCompleted},";
         }
-        public string ToString(List<UserModel> list)
+
+        /// <summary>
+        /// To string a todo with user
+        /// </summary>
+        /// <param name="user"> a new user </param>
+        /// <returns></returns>
+        public string ToString(UserModel user)
         {
             return @$"Id : {Id}, " +
                 $"Name : {Name}, " +
                 $"Description : {Description}, " +
                 $"Priority status : {Status}," +
-                $"User : {UserId} " +  
+                $"User : {user.Name} ( {user.Id} ) " +  
                 $"Due Date : {DueDate}," +
                 $"Completed : {this.IsCompleted},";
         }

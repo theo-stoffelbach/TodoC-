@@ -10,12 +10,12 @@ namespace UltimateProject.test_unit
         {
             List<string> errorList = new List<string>();
 
-            if (!_testExportCSV()) return;
-            if (!_testImportCSV()) return;
+            if (!_TestExportCSV()) return;
+            if (!_TestImportCSV()) return;
 
         }
 
-        public static bool _testExportCSV()
+        public static bool _TestExportCSV()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace UltimateProject.test_unit
             return false;
         }
          
-        public static bool _testImportCSV()
+        public static bool _TestImportCSV()
         {
             try
             {
@@ -61,25 +61,6 @@ namespace UltimateProject.test_unit
             }
             return false;
         }
-         
-        public static bool _test()
-        {
-            try
-            {        
-                string[] path = new string[] { "db.csv" };
-                CSVToDb.ImportFromCsv(path);
-
-                Print.SuccessDisplay("To import csv");
-                return true;
-            }
-            catch (Exception err)
-            {
-                Print.ErrorDisplay($"To import csv : {err}");
-            }
-            return false;
-        }
-
-        
     }
 
 }

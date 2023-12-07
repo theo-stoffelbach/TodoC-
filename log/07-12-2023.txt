@@ -1,0 +1,2 @@
+command : 'show' and arg : 'System.String[]'
+command : 'zip' and arg : 'System.String[]'

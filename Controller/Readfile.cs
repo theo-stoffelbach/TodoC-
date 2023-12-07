@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-using UltimateProject.View;
+﻿using UltimateProject.View;
 
 namespace UltimateProject.Controller
 {

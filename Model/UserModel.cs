@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.VisualBasic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using UltimateProject.View;
 
 namespace UltimateProject.Model
@@ -8,18 +7,22 @@ namespace UltimateProject.Model
     public class UserModel
     {
 
-        private static EFContext _db = EFContext.Instance;
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
 
-        [NotMapped] public List<int> _userIds { get; set; }
-
+        private static EFContext _db = EFContext.Instance;
+        
         public UserModel(string name)
         {
             Name = name;
         }
 
+        /// <summary>
+        /// To create a user Id
+        /// </summary>
+        /// <param name="user"> name </param>
+        /// <returns></returns>
         public static UserModel? AddUser(string user)
         {
             try
@@ -36,19 +39,35 @@ namespace UltimateProject.Model
             }
         }
 
-        public static List<TodoModel>? GetUserIds(int idUser) {
-            List<TodoModel> todos = _db.TodoModels.Where(todo => todo.UserId == idUser).ToList();
-            
-            if (todos.Count == 0)
+        /// <summary>
+        /// To get all users
+        /// </summary>
+        /// <returns></returns>
+        public static List<UserModel>? GetAllUser()
+        {
+            try
             {
-                Print.ErrorDisplay($"Il n'y pas de todo avec l'Id : {idUser}");
+                List<UserModel>? userProfiles = _db.UserModels.ToList();
+
+                if (userProfiles.Count == 0)
+                {
+                    Print.ErrorDisplay($"Il n'y a pas d'utilisateur.");
+                    return null;
+                }
+
+                return userProfiles;
+            }
+            catch (Exception err)
+            {
+                Print.ErrorFatalDisplay($"with bdd to : {err}");
                 return null;
-            }   
-
-            return todos;
+            }
         }
-
-        public static List<int>? GetAllUser()
+        /// <summary>
+        /// To get all users Id
+        /// </summary>
+        /// <returns></returns>
+        public static List<int>? GetAllUserId()
         {
             try
             {
@@ -57,7 +76,7 @@ namespace UltimateProject.Model
 
                 if (userProfiles.Count == 0)
                 {
-                    Print.ErrorDisplay($"Il n'y a pas d'utilisateur.");
+                    Print.ErrorDisplay($"There is no user.");
                     return null;
                 }
 
@@ -75,6 +94,11 @@ namespace UltimateProject.Model
             }
         }
 
+        /// <summary>
+        /// To get a user with his id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public static bool IsUserIdToTodos(int userId)
         {
             try
@@ -89,6 +113,11 @@ namespace UltimateProject.Model
             }
         }
 
+        /// <summary>
+        /// To get a user with his id
+        /// </summary>
+        /// <param name="id"> User id </param>
+        /// <returns></returns>
         public static UserModel? SearchUserWithId(int id)
         {
             try
@@ -96,7 +125,7 @@ namespace UltimateProject.Model
                 UserModel? userModel = _db.UserModels.Find(id);
                 if (userModel == null)
                 {
-                    Print.ErrorDisplay($"Il n'y pas de user avec l'Id : {id}");
+                    Print.ErrorDisplay($"There is no user.");
                     return null;
                 }
                 return userModel;
@@ -109,6 +138,12 @@ namespace UltimateProject.Model
             return null;
         }
 
+        /// <summary>
+        /// Update a user
+        /// </summary>
+        /// <param name="id"> User id </param>
+        /// <param name="name"> string of the name </param>
+        /// <returns></returns>
         public static UserModel? UpdateUser(int id,string name)
         {
             UserModel? userdb = _db.UserModels.Find(id);
@@ -129,6 +164,11 @@ namespace UltimateProject.Model
             return null;
         }
 
+        /// <summary>
+        /// Delete a user
+        /// </summary>
+        /// <param name="todoId"> the int of todo</param>
+        /// <returns></returns>
         public static UserModel? DeleteUser(int todoId)
         {
             try
@@ -152,14 +192,18 @@ namespace UltimateProject.Model
             return null;
         }
 
-
+        /// <summary>
+        /// Has delete todos with user id
+        /// </summary>
+        /// <param name="todoId"> is a user id </param>
+        /// <returns></returns>
         private static bool _hasDeleteTodosWithUserId(int todoId)
         {
             List<TodoModel>? todos = TodoModel.GetTodosWithUserId(todoId);
 
             if (todos == null)
             {
-                Print.ErrorDisplay($"Il n'y pas de todo avec l'Id : {todoId}");
+                Print.ErrorDisplay($"There is no user with {todoId}");
                 return false;
             }
 
@@ -169,6 +213,11 @@ namespace UltimateProject.Model
             }
 
             return true;
+        }
+
+        public  string ToString()
+        {
+            return @$"Id : {this.Id}, and his name is : {this.Name}, ";
         }
     }
 }

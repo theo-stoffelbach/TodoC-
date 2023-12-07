@@ -16,15 +16,15 @@ namespace TP_Theo_Stoffelbach.Controller
         /// <param name="log"> what action to user </param>
         public static void AddNewLogAction(string log)
         {
-            string path = _getPathFile();
+            string path = _GetPathFile();
 
             if (File.Exists(path))
             {
-                _addLog(log);
+                _AddLog(log);
             }
             else
             {
-                _createFile();
+                _CreateFile();
             }
 
         }
@@ -34,12 +34,12 @@ namespace TP_Theo_Stoffelbach.Controller
         /// </summary>
         public static void ZipAllLogs()
         {
-            string path = _getPathFile();
+            string path = _GetPathFile();
 
             if (File.Exists(path))
             {
                 try {   
-                    _zipToFile(path);
+                    _ZipToFile(path);
                     Print.SuccessDisplay("Zip created :) ");
                 }
                 catch (Exception ex){
@@ -57,7 +57,7 @@ namespace TP_Theo_Stoffelbach.Controller
         /// To zip all logs in a zip file
         /// </summary>
         /// <param name="path"></param>
-        private static void _zipToFile(string path)
+        private static void _ZipToFile(string path)
         {
             DateTime currentDate = DateTime.Now;
             string formattedDate = currentDate.ToString("dd-MM-yyyy");
@@ -75,11 +75,11 @@ namespace TP_Theo_Stoffelbach.Controller
         /// To add a new log in the file
         /// </summary>
         /// <param name="log"> Add a log string </param>
-        private static void _addLog(string log)
+        private static void _AddLog(string log)
         {
             try
             {
-                using (StreamWriter writer = File.AppendText(_getPathFile()))
+                using (StreamWriter writer = File.AppendText(_GetPathFile()))
                 {
                     writer.WriteLine(log);
                 }
@@ -93,9 +93,9 @@ namespace TP_Theo_Stoffelbach.Controller
         /// <summary>
         /// To create a file
         /// </summary>
-        private static void _createFile()
+        private static void _CreateFile()
         {
-            string path = _getPathFile();
+            string path = _GetPathFile();
             try
             {
                 string cheminAbsolu = AppDomain.CurrentDomain.BaseDirectory + "../../../log";
@@ -120,7 +120,7 @@ namespace TP_Theo_Stoffelbach.Controller
         /// Get the path of the file
         /// </summary>
         /// <returns></returns>
-        private static string _getPathFile()
+        private static string _GetPathFile()
         {
             DateTime currentDate = DateTime.Now;
             string formattedDate = currentDate.ToString("dd-MM-yyyy") + ".txt";
@@ -131,5 +131,6 @@ namespace TP_Theo_Stoffelbach.Controller
 
             return cheminDuFichier;
         }
+
     }
 }

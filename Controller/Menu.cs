@@ -1,19 +1,17 @@
 ﻿using TP_Theo_Stoffelbach.Controller;
-using UltimateProject.Model;
 using UltimateProject.View;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace UltimateProject.Controller
 {
 
     public record Menu
     {
-        private static string _chooseUser;
-        private static string[] _arguments;
-        private static bool _readOnly;
         public List<Notif> NotifList = new List<Notif>();
         public static Dictionary<string, Action> ChooseMenu;
 
+        private static string _chooseUser;
+        private static string[] _arguments;
+        private static bool _readOnly;
         private static Menu _instance = null;
 
 
@@ -33,7 +31,6 @@ namespace UltimateProject.Controller
                 { "changeuseridtodo", () => TodoController.ChangeTodoWithUserId(_arguments,_readOnly)},
                 { "adddesctodo",() => TodoController.AddDescTodo(_arguments,_readOnly)},
                 { "showdetailtodos",  () => TodoController.ReadDetailsTodos(_arguments,_readOnly)},
-                { "showusers", () => UserController.ReadUsers()},
 
                 { "filtertodo", () => Filter.FilterTodo(_arguments)},
                 { "showtodos",  () => TodoController.ReadTodos()},
@@ -42,13 +39,16 @@ namespace UltimateProject.Controller
 
                 { "importcsv", () => CSVToDb.ImportFromCsv(_arguments)},
                 { "exportcsv", () => CSVToDb.ExportToCsv()},
-
+                
                 { "readfile", () => ReadFile.FileCommand()},
 
                 { "createuser", () => UserController.AddUser(_arguments, _readOnly)},
                 { "updateuser", () => UserController.UpdateTodo(_arguments, _readOnly)},
                 { "deleteuser", () => UserController.DeleteUser(_arguments, _readOnly)},
+                { "showusers", () => UserController.ReadUsers()},
+
             };
+
         }
 
         /// <summary>
@@ -88,9 +88,10 @@ namespace UltimateProject.Controller
             _arguments = command.Skip(1).ToArray();
             _readOnly = false;
 
-            _selectCommand(inputUser);
+            _SelectCommand(inputUser);
 
             Print.Display("");
+            Logger.AddNewLogAction($"command : '{_chooseUser}' and arg : '{_arguments}'");
             UseMenu();
         }
 
@@ -137,7 +138,7 @@ namespace UltimateProject.Controller
             UseMenu();
         }
 
-        private void _selectCommand(string command)
+        private void _SelectCommand(string command)
         {
             if (ChooseMenu.ContainsKey(_chooseUser))
             {
@@ -145,7 +146,7 @@ namespace UltimateProject.Controller
             }
             else
             {
-                Print.ErrorDisplay($"Error to Execute this : {Command}");
+                Print.ErrorDisplay($"Error to Execute this : {command}");
             }
         }
 

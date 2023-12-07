@@ -1,6 +1,5 @@
 ﻿using UltimateProject.Model;
 using UltimateProject.View;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace UltimateProject.Controller
 {
@@ -25,6 +24,9 @@ namespace UltimateProject.Controller
             _CreateTodo(args);
         }
 
+        /// <summary>
+        /// to read all todos
+        /// </summary>
         public static void ReadTodos()
         { 
             List<TodoModel> todos = TodoModel.ReadTodos();
@@ -37,6 +39,11 @@ namespace UltimateProject.Controller
             Print.Display("");
         }
 
+        /// <summary>
+        /// to read all todos with status and more
+        /// </summary>
+        /// <param name="args"> it for get more detail of a todo </param>
+        /// <param name="readOnlyMode"> If it ReadOnly </param>
         public static void ReadDetailsTodos(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
@@ -45,45 +52,68 @@ namespace UltimateProject.Controller
             int id = Convertor.ConvStringToInt(args[0]);
 
             TodoModel todo = TodoModel.ReadTodo(id);
+            if (todo == null || !todo.UserId.HasValue) 
+            {
+                Print.ErrorDisplay($"Todo is null");
+                return;
+            };
 
+            UserModel? user = UserModel.SearchUserWithId(todo.UserId.Value);
 
-            // WAIT TO FIX
-            //List<UserModel> users = UserController.userModels(todo);
-
-            //if (users == null) return;
+            if (user == null)
+            {
+                Print.ErrorDisplay($"User is null");
+                return;
+            }; 
 
             Print.Display("");
-            //Print.Display(todo.ToString(users));
+            Print.Display(todo.ToString(user));
             Print.Display("");
         }
 
 
-        // updatetodo 5 TestDB DescDB 
+        /// <summary>
+        /// To update a todo with id and params
+        /// </summary>
+        /// <param name="args"> 
+        /// 0 : is a Int to get the id of todo
+        /// 1 : is a string to get the new title of todo
+        /// 2 : is a string to get the new description of todo
+        /// 3 : is a Priority to get the new status of todo
+        /// 4 : is a DateTime to get the new date of todo
+        /// </param>
+        /// <param name="readOnlyMode"> If it ReadOnly </param>
         public static void UpdateTodo(string[] args, bool readOnlyMode)
         {
-            if (!Verif.HasArgsLength(args, 6)) return;
+            if (!Verif.HasArgsLength(args, 5)) return;
 
             if (readOnlyMode)
             {
                 if (Verif.IsStatus(args[3])) return;
                 if (Verif.IsDate(args[4])) return;
                 if (Verif.IsInt(args[0])) return;
-                if (Verif.IsInt(args[5])) return;
             };
 
             PriorityStatus status = Convertor.ChangeStringToPriority(args[3]);
             DateTime date = Convertor.ChangeStringToDate(args[4]);
             int id = Convertor.ConvStringToInt(args[0]);
-            int userId = Convertor.ConvStringToInt(args[5]);
 
-            TodoModel model = new TodoModel(args[1], args[2], status, date, userId);
+            TodoModel model = new TodoModel(args[1], args[2], status, date, id);
 
-            TodoModel todoUpdated = TodoModel.UpdateTodo(id, model);
+            TodoModel? todoUpdated = TodoModel.UpdateTodo(id, model);
             
             if (todoUpdated == null) return;
 
             Print.SuccessDisplay("Todo Updated with id : " + todoUpdated.Id);
         }
+
+        /// <summary>
+        /// To delete a todo with id
+        /// </summary>
+        /// <param name="args">
+        /// 0 : is a Int to get the id of todo
+        /// </param>
+        /// <param name="readOnlyMode"> If it ReadOnly </param>
         public static void DeleteTodo(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1,2)) return;
@@ -109,6 +139,13 @@ namespace UltimateProject.Controller
             Print.SuccessDisplay($"Delete Todo {id} successful");
         }
 
+        /// <summary>
+        /// To delete all todos
+        /// </summary>
+        /// <param name="args">
+        /// 0 : is a Int to get the id of todo for active 
+        /// </param>
+        /// <param name="readOnlyMode"> If it ReadOnly </param>
         public static void ActivateTodo(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 1)) return;
@@ -129,6 +166,14 @@ namespace UltimateProject.Controller
 
         }
 
+        /// <summary>
+        /// to add  a description to a todo or change it
+        /// </summary>
+        /// <param name="args">
+        /// 0 : is a Int to get the id of todo
+        /// 1 : is a string to get the new description of todo
+        /// </param>
+        /// <param name="readOnlyMode"> If it ReadOnly </param>
         public static void AddDescTodo(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 2)) return;
@@ -148,6 +193,14 @@ namespace UltimateProject.Controller
             Print.SuccessDisplay($"Todo {todo.Id} is add description");
         }
 
+        /// <summary>
+        /// To change the user of a todo
+        /// </summary>
+        /// <param name="args">
+        /// 0 : is a Int to get the id of todo
+        /// 1 : is a Int to get the id of user
+        /// </param>
+        /// <param name="readOnlyMode"> If it ReadOnly </param>
         public static void ChangeTodoWithUserId(string[] args, bool readOnlyMode)
         {
             if (!Verif.HasArgsLength(args, 2)) return;
@@ -162,26 +215,43 @@ namespace UltimateProject.Controller
 
             if (todo == null)
             {
-                Print.ErrorDisplay($"Il n'y a pas de todo avec le User (Id) mentionnés.");
+                Print.ErrorDisplay($"There is no todo with the Id ({idTodo}) mentioned.");
                 return;
             }
 
             Print.SuccessDisplay($"Todo {idTodo} is change with User {idNewUser}");
         }
 
+        /// <summary>
+        /// To read all todos with user id
+        /// </summary>
+        /// <param name="todoId">
+        /// 0 : is an Int to get the id of todo
+        /// </param>
+        /// <returns></returns>
         public static TodoModel? ReadTodosWithId(int todoId)
         {
-            TodoModel? todo = TodoModel.ReadTodosWithId(todoId);
+            TodoModel? todo = TodoModel.ReadTodo(todoId);
 
             if (todo == null)
             {
-                Print.ErrorDisplay($"Il n'y a pas de todo avec le User (Id) mentionnés.");
-                return todo;
+                Print.ErrorDisplay($"There is no todo with the todoId ( {todoId} ) mentioned.");
+                return null;
             }
 
             return todo;
         }
 
+        /// <summary>
+        /// To create a todo
+        /// </summary>
+        /// <param name="args">
+        /// 0 : is a string to get the title of todo
+        /// 1 : is a Priority to get the status of todo
+        /// 2 : is a DateTime to get the date of todo
+        /// 3 : is a Int to get the id of user
+        /// 4 : is a string to get the description of todo
+        /// </param>
         private static void _CreateTodo(string[] args)
         {
             PriorityStatus status = Convertor.ChangeStringToPriority(args[1]);
@@ -194,11 +264,14 @@ namespace UltimateProject.Controller
             };
 
             TodoModel model = new TodoModel(args[0], args[4], status, date, userId);
-            TodoModel todo = TodoModel.AddTodo(model);
+            TodoModel? todo = TodoModel.AddTodo(model);
 
-            if (todo != null) return;
+            if (todo == null)
+            {
+                Print.ErrorDisplay($"Bug with add todo {todo.Id} because is null  ");
+                return;
+            };
             Print.SuccessDisplay("Todo Created with id : " + todo.Id);
-
 
             if (todo.Description == "") Menu.GetInstance().AddNotifTodo(todo.Id);
         }
